@@ -11,6 +11,15 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.maxcembalest.loops.ProjectsActivity"
-    tools:showIn="@layout/app_bar_projects">
+    tools:showIn="@layout/app_bar_projects"
+    android:background="#cccccc">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/projectRecycler">
+
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>
