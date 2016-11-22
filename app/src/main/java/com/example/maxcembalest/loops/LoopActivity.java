@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -16,6 +19,12 @@ public class LoopActivity extends AppCompatActivity {
     private final int sampleRate = 8000;
     private int numSamples = (int) ( duration * sampleRate);
     private double sample[];
+
+    private boolean enabled;
+
+    private Timer timerMain;
+
+    private int currentBeat=0;
 
     private final Frequencies f = new Frequencies();
 
@@ -29,6 +38,8 @@ public class LoopActivity extends AppCompatActivity {
     private Thread secondNote;
     private Thread thirdNote;
     private Thread fourthNote;
+
+    private Thread songLoop;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +55,6 @@ public class LoopActivity extends AppCompatActivity {
                 try {
                     genTone(loopGridView.getNoteFrequency(0));
                     playSound();
-                    sleep((int) duration*1000);
                 }
                 catch (Exception e) {}
             }
@@ -55,7 +65,6 @@ public class LoopActivity extends AppCompatActivity {
                 try {
                     genTone(loopGridView.getNoteFrequency(1));
                     playSound();
-                    sleep((int) duration*1000);
                 }
                 catch (Exception e) {}
             }
@@ -66,7 +75,6 @@ public class LoopActivity extends AppCompatActivity {
                 try {
                     genTone(loopGridView.getNoteFrequency(2));
                     playSound();
-                    sleep((int) duration*1000);
                 }
                 catch (Exception e) {}
             }
@@ -77,13 +85,10 @@ public class LoopActivity extends AppCompatActivity {
                 try {
                     genTone(loopGridView.getNoteFrequency(3));
                     playSound();
-                    sleep((int) duration*1000);
                 }
                 catch (Exception e) {}
             }
         };
-
-
     }
 
     @OnClick(R.id.btnSound1)
@@ -111,11 +116,13 @@ public class LoopActivity extends AppCompatActivity {
     }
     @OnClick(R.id.btnPlay)
     void onClickPlay(){
-
-        firstNote.start();
-        secondNote.start();
-        thirdNote.start();
-        fourthNote.start();
+        enabled=true;
+        timerMain=new Timer();
+        timerMain.schedule(new PlayLoopTask(),0,1000);
+    }
+    @OnClick(R.id.btnStop)
+    void onClickStop(){
+        enabled=false;
     }
 
 
@@ -165,10 +172,32 @@ public class LoopActivity extends AppCompatActivity {
 
     void playSound(){
         final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                sampleRate, AudioFormat.CHANNEL_OUT_MONO,
+                sampleRate, AudioFormat.CHANNEL_OUT_STEREO,
                 AudioFormat.ENCODING_PCM_16BIT, generatedSnd.length,
                 AudioTrack.MODE_STATIC);
         audioTrack.write(generatedSnd, 0, generatedSnd.length);
         audioTrack.play();
+    }
+
+    private class PlayLoopTask extends TimerTask {
+        @Override
+        public void run(){
+            while(enabled) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+            }
+        }
+    }
+
+    public void updateCurrentBeat(){
+        if (currentBeat<3){currentBeat++;}
+        else{currentBeat=0;}
     }
 }
