@@ -12,17 +12,61 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
+
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 public class ProjectsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ProjectRecyclerAdapter projectRecyclerAdapter;
+    private RecyclerView projectRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
+        setupUI();
+
+        projectRecycler = (RecyclerView) findViewById(
+                R.id.projectRecycler);
+        projectRecycler.setHasFixedSize(true);
+        projectRecycler.setLayoutManager(new GridLayoutManager(this, 2));
+        projectRecyclerAdapter = new ProjectRecyclerAdapter();
+        projectRecycler.setAdapter(projectRecyclerAdapter);
+    }
+
+    private void setupUI() {
+        Toolbar toolbar = setupToolbar();
+
+        setupABtn();
+
+        setupDrawer(toolbar);
+
+        setupNavView();
+    }
+
+    private Toolbar setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        return toolbar;
+    }
 
+    private void setupNavView() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setupDrawer(Toolbar toolbar) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    private void setupABtn() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.loops_logo_no_word);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -39,15 +83,6 @@ public class ProjectsActivity extends AppCompatActivity
                 startActivity(new Intent(ProjectsActivity.this,AndroidSoundPoolExample.class));
             }
         });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
