@@ -1,4 +1,4 @@
-package com.example.maxcembalest.loops.usermodel;
+package com.example.maxcembalest.loops.grid;
 
 /**
  * Created by maxcembalest on 11/28/16.
@@ -6,6 +6,7 @@ package com.example.maxcembalest.loops.usermodel;
 
 public class ToneMatrix {
 
+    private MatrixRow row0;
     private MatrixRow row1;
     private MatrixRow row2;
     private MatrixRow row3;
@@ -13,13 +14,13 @@ public class ToneMatrix {
     private MatrixRow row5;
     private MatrixRow row6;
     private MatrixRow row7;
-    private MatrixRow row8;
 
     public ToneMatrix(){
 
     }
 
-    public ToneMatrix(MatrixRow r1, MatrixRow r2,MatrixRow r3, MatrixRow r4, MatrixRow r5, MatrixRow r6, MatrixRow r7, MatrixRow r8){
+    public ToneMatrix(MatrixRow r0, MatrixRow r1, MatrixRow r2, MatrixRow r3, MatrixRow r4, MatrixRow r5, MatrixRow r6, MatrixRow r7){
+        row0=r0;
         row1=r1;
         row2=r2;
         row3=r3;
@@ -27,7 +28,14 @@ public class ToneMatrix {
         row5=r5;
         row6=r6;
         row7=r7;
-        row8=r8;
+    }
+
+    public MatrixRow getRow0() {
+        return row0;
+    }
+
+    public void setRow0(MatrixRow row0) {
+        this.row0 = row0;
     }
 
     public MatrixRow getRow1() {
@@ -86,39 +94,31 @@ public class ToneMatrix {
         this.row7 = row7;
     }
 
-    public MatrixRow getRow8() {
-        return row8;
-    }
-
-    public void setRow8(MatrixRow row8) {
-        this.row8 = row8;
-    }
-
     public MatrixRow getRowI(int i){
         MatrixRow ret = null;
         switch (i){
-            case 0: ret =  row1;
-            case 1: ret =  row2;
-            case 2: ret =  row3;
-            case 3: ret =  row4;
-            case 4: ret =  row5;
-            case 5: ret =  row6;
-            case 6: ret =  row7;
-            case 7: ret =  row8;
+            case 0: ret =  row0;break;
+            case 1: ret =  row1;break;
+            case 2: ret =  row2;break;
+            case 3: ret =  row3;break;
+            case 4: ret =  row4;break;
+            case 5: ret =  row5;break;
+            case 6: ret =  row6;break;
+            case 7: ret =  row7;
         }
         return ret;
     }
 
     public void setRowI(int i, MatrixRow rowI) {
         switch (i){
-            case 0: setRow1(rowI);break;
-            case 1: setRow2(rowI);break;
-            case 2: setRow3(rowI);break;
-            case 3: setRow4(rowI);break;
-            case 4: setRow5(rowI);break;
-            case 5: setRow6(rowI);break;
-            case 6: setRow7(rowI);break;
-            case 7: setRow8(rowI);break;
+            case 0: setRow0(rowI);break;
+            case 1: setRow1(rowI);break;
+            case 2: setRow2(rowI);break;
+            case 3: setRow3(rowI);break;
+            case 4: setRow4(rowI);break;
+            case 5: setRow5(rowI);break;
+            case 6: setRow6(rowI);break;
+            case 7: setRow7(rowI);break;
         }
     }
 }

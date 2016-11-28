@@ -17,8 +17,8 @@ public class LoopGridView extends View{
 
     private Paint paintLine;
     private Paint paintBgSquare;
-    public static int dimNotes = 8;
-    public static int dimBeats = 8;
+    public static int dimNotes = 4;
+    public static int dimBeats = 4;
 
     public LoopGridView(Context context){
         super(context);
@@ -102,24 +102,22 @@ public class LoopGridView extends View{
         LoopGrid.getInstance().setFieldClicked(tX,tY);
     }
 
-    public double getNoteFrequency(int currentBeat, int note){
+    public double getNoteFrequency(int beat, int note){
         double freq = 0;
         try {
-            freq = LoopGrid.getInstance().getFieldContent(currentBeat, note).getFrequency();
+            //freq = LoopGrid.getInstance().getRow(note).getFrequency();
+            MatrixRow r = LoopGrid.getInstance().getRow(note);
+            LoopGridSquare sq = r.getSqJ(beat);
+            if (sq.isClicked()){
+                freq = r.getFrequency();
+            }
         } catch (Exception e)
         {
-            Log.d("TAG_REST", "rest");
+            Log.d("TAG_REST", "rest for thread "+note);
             e.printStackTrace();
         }finally {
             return freq;
         }
-    }
-
-    private int getSelectedBeat(int currentBeat) {
-        for (int row = 0; row < dimNotes; row ++){
-            if (LoopGrid.getInstance().getFieldContent(currentBeat,row).isClicked()){return row;}
-        }
-        return -1;
     }
 
     public void clearGrid() {

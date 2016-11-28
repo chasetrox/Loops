@@ -6,10 +6,9 @@ import android.media.AudioTrack;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.example.maxcembalest.loops.grid.LoopGridView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,10 +33,6 @@ public class LoopActivity extends AppCompatActivity {
     Handler handler = new Handler();
 
     private LoopGridView loopGridView;
-    DatabaseReference matricesRef = FirebaseDatabase.getInstance().getReference("matrices");
-    DatabaseReference rowsRef = FirebaseDatabase.getInstance().getReference("rows");
-    DatabaseReference sqsRef = FirebaseDatabase.getInstance().getReference("squares");
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,27 +46,55 @@ public class LoopActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSound1)
     void onClick1(){
-        genTone(f.freqLowA);
+        genTone(f.getFreqLowG());
         playSound();
     }
     @OnClick(R.id.btnSound2)
     void onClick2(){
-        genTone(f.freqB);
+        genTone(f.getFreqLowA());
         playSound();
     }
     @OnClick(R.id.btnSound3)
     void onClick3(){
-        genTone(f.freqCSharp);
+        genTone(f.getFreqLowB());
         playSound();
     }
     @OnClick(R.id.btnSound4)
     void onClick4(){
-        genTone(f.freqE);
+        genTone(f.getFreqE());
         playSound();
     }
     @OnClick(R.id.btnPlay)
     void onClickPlay(){
         enabled=true;
+        /*
+        new PlayRow1Thread().start();
+        if (dimNotes>1){
+            new PlayRow2Thread().start();
+            if (dimNotes>2){
+                new PlayRow3Thread().start();
+                if (dimNotes>3){
+                    new PlayRow4Thread().start();
+                    if (dimNotes>4){
+                        new PlayRow5Thread().start();
+                        if (dimNotes>5){
+                            new PlayRow6Thread().start();
+                            if (dimNotes>6){
+                                new PlayRow7Thread().start();
+                                if (dimNotes>7){
+                                    new PlayRow8Thread().start();
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }*/
         new PlayRow1Thread().start();
         new PlayRow2Thread().start();
         new PlayRow3Thread().start();
@@ -80,6 +103,7 @@ public class LoopActivity extends AppCompatActivity {
         new PlayRow6Thread().start();
         new PlayRow7Thread().start();
         new PlayRow8Thread().start();
+
 
     }
     @OnClick(R.id.btnStop)
@@ -90,6 +114,10 @@ public class LoopActivity extends AppCompatActivity {
     @OnClick(R.id.btnClear)
     void onClickClear(){
         loopGridView.clearGrid();
+    }
+    @OnClick(R.id.btnSave)
+    void onClickSave(){
+        Toast.makeText(this,"tested save button", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -146,7 +174,6 @@ public class LoopActivity extends AppCompatActivity {
                     public void run() {
                         genTone(loopGridView.getNoteFrequency(currentBeat,1));
                         playSound();
-                        updateCurrentBeat();
                     }
                 });
                 try {
@@ -169,7 +196,6 @@ public class LoopActivity extends AppCompatActivity {
                     public void run() {
                         genTone(loopGridView.getNoteFrequency(currentBeat,2));
                         playSound();
-                        updateCurrentBeat();
                     }
                 });
                 try {
@@ -192,7 +218,6 @@ public class LoopActivity extends AppCompatActivity {
                     public void run() {
                         genTone(loopGridView.getNoteFrequency(currentBeat,3));
                         playSound();
-                        updateCurrentBeat();
                     }
                 });
                 try {
@@ -215,7 +240,6 @@ public class LoopActivity extends AppCompatActivity {
                     public void run() {
                         genTone(loopGridView.getNoteFrequency(currentBeat,4));
                         playSound();
-                        updateCurrentBeat();
                     }
                 });
                 try {
@@ -238,7 +262,6 @@ public class LoopActivity extends AppCompatActivity {
                     public void run() {
                         genTone(loopGridView.getNoteFrequency(currentBeat,5));
                         playSound();
-                        updateCurrentBeat();
                     }
                 });
                 try {
@@ -261,7 +284,6 @@ public class LoopActivity extends AppCompatActivity {
                     public void run() {
                         genTone(loopGridView.getNoteFrequency(currentBeat,6));
                         playSound();
-                        updateCurrentBeat();
                     }
                 });
                 try {
@@ -284,7 +306,6 @@ public class LoopActivity extends AppCompatActivity {
                     public void run() {
                         genTone(loopGridView.getNoteFrequency(currentBeat,7));
                         playSound();
-                        updateCurrentBeat();
                     }
                 });
                 try {

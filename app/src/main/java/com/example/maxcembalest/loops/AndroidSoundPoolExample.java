@@ -38,7 +38,7 @@ public class AndroidSoundPoolExample extends AppCompatActivity {
                 loaded = true;
             }
         });
-        soundID = soundPool.load(this, R.raw.dumb_story_no_click, 1);
+        //soundID = soundPool.load(this, R.raw.dumb_story_no_click, 1);
     }
 
     public void playSound(View v) {
@@ -69,7 +69,7 @@ public class AndroidSoundPoolExample extends AppCompatActivity {
     public void pauseSound(View v) {
         if (plays) {
             soundPool.pause(soundID);
-            soundID = soundPool.load(this, R.raw.dumb_story_no_click, counter);
+           // soundID = soundPool.load(this, R.raw.dumb_story_no_click, counter);
             Toast.makeText(this, "Pause sound", Toast.LENGTH_SHORT).show();
             plays = false;
         }
@@ -78,7 +78,7 @@ public class AndroidSoundPoolExample extends AppCompatActivity {
     public void stopSound(View v) {
         if (plays) {
             soundPool.stop(soundID);
-            soundID = soundPool.load(this, R.raw.dumb_story_no_click, counter);
+           // soundID = soundPool.load(this, R.raw.dumb_story_no_click, counter);
             Toast.makeText(this, "Stop sound", Toast.LENGTH_SHORT).show();
             plays = false;
         }
