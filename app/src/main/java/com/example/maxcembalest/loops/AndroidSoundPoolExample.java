@@ -38,7 +38,7 @@ public class AndroidSoundPoolExample extends AppCompatActivity {
                 loaded = true;
             }
         });
-       // soundID = soundPool.load(this, R.raw.dumb_story_no_click, 1);
+
     }
 
     public void playSound(View v) {

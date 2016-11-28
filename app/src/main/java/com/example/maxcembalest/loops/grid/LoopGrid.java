@@ -1,8 +1,6 @@
 package com.example.maxcembalest.loops.grid;
 
 import com.example.maxcembalest.loops.Frequencies;
-import com.example.maxcembalest.loops.usermodel.MatrixRow;
-import com.example.maxcembalest.loops.usermodel.ToneMatrix;
 
 import static com.example.maxcembalest.loops.grid.LoopGridView.dimBeats;
 import static com.example.maxcembalest.loops.grid.LoopGridView.dimNotes;
@@ -32,12 +30,13 @@ public class LoopGrid {
     private ToneMatrix model = new ToneMatrix(null,null,null,null,null,null,null,null);
 
     public void populateGrid(){
-        for (int i = 0; i < 7; i++){
+        for (int i = 0; i < 8; i++){
             if (i<= dimNotes){
-                model.setRowI(i,new MatrixRow(null,null,null,null,null,null,null,null));
-                for (int j = 0; j < 7; j++){
+                MatrixRow newRow = new MatrixRow(null,null,null,null,null,null,null,null,f.determineFreq(i),KEY_DEFAULT);
+                model.setRowI(i,newRow);
+                for (int j = 0; j < 8; j++){
                     if (j <= dimBeats){
-                        model.getRowI(i).setSqJ(j,new LoopGridSquare(f.determineFreq(i),KEY_DEFAULT,false));
+                        model.getRowI(i).setSqJ(j,new LoopGridSquare(false));
                     }
                 }
             }
@@ -49,9 +48,13 @@ public class LoopGrid {
         return model.getRowI(y).getSqJ(x);
     }
 
-    public void setFieldClicked(int x, int y){
-        //model[x][y].setClicked(!model[x][y].isClicked());
-        model.getRowI(y).getSqJ(x).setClicked(!model.getRowI(y).getSqJ(x).isClicked());
+    public void setFieldClicked(int beat, int note){
+
+        model.getRowI(note).getSqJ(beat).setClicked(!model.getRowI(note).getSqJ(beat).isClicked());
+    }
+
+    public MatrixRow getRow(int x){
+        return model.getRowI(x);
     }
 
    // public void setField
