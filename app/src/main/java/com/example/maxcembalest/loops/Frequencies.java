@@ -6,14 +6,14 @@ package com.example.maxcembalest.loops;
 
 public class Frequencies {
 
-    public double freqLowA = 220.0;
-    public double freqB = 246.94;
-    public double freqCSharp = 277.18;
-    public double freqD = 293.66;
-    public double freqE = 329.63;
-    public double freqFSharp = 369.99;
-    public double freqGSharp = 415.30;
-    public double freqHighA = 440.00;
+    public double freqLowA = 440.00;
+    public double freqB = 493.88;
+    public double freqCSharp = 554.37;
+    public double freqD = 587.33;
+    public double freqE = 659.25;
+    public double freqFSharp = 739.99;
+    public double freqGSharp = 830.61;
+    public double freqHighA = 880.00;
 
     public Frequencies() {
     }
@@ -50,24 +50,24 @@ public class Frequencies {
         return freqHighA;
     }
 
-    public double columnToFreq(int col){
+    public double determineFreq(int f){
         double amt = 0;
-        switch (col){
-            case 0:
-                amt = getFreqLowA();break;
-            case 1:
-                amt = getFreqB();break;
-            case 2:
-                amt = getFreqCSharp();break;
-            case 3:
-                amt = getFreqD();break;
-            case 4:
-                amt = getFreqE();break;
-            case 5:
-                amt = getFreqFSharp();break;
-            case 6:
-                amt = getFreqGSharp();break;
+        switch (f){
             case 7:
+                amt = getFreqLowA();break;
+            case 6:
+                amt = getFreqB();break;
+            case 5:
+                amt = getFreqCSharp();break;
+            case 4:
+                amt = getFreqD();break;
+            case 3:
+                amt = getFreqE();break;
+            case 2:
+                amt = getFreqFSharp();break;
+            case 1:
+                amt = getFreqGSharp();break;
+            case 0:
                 amt = getFreqHighA();break;
         }
         return amt;

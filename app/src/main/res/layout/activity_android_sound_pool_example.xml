@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_android_sound_pool_example"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.example.maxcembalest.loops.AndroidSoundPoolExample">
+
+    <Button
+        android:id="@+id/btnPoolPlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="playSound"
+        android:text="Play"/>
+
+    <Button
+        android:id="@+id/btnPoolPlayLoop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="playLoop"
+        android:text="Play Loop"/>
+
+    <Button
+        android:id="@+id/btnPoolPause"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="pauseSound"
+        android:text="Pause"/>
+
+    <Button
+        android:id="@+id/btnPoolStop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="stopSound"
+        android:text="Stop"/>
+
+</LinearLayout>

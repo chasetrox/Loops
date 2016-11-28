@@ -1,4 +1,4 @@
-package com.example.maxcembalest.loops;
+package com.example.maxcembalest.loops.grid;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -17,7 +17,8 @@ public class LoopGridView extends View{
 
     private Paint paintLine;
     private Paint paintBgSquare;
-    public static final int dim = 4;
+    public static int dimNotes = 8;
+    public static int dimBeats = 8;
 
     public LoopGridView(Context context){
         super(context);
@@ -53,30 +54,27 @@ public class LoopGridView extends View{
     }
 
     private void drawLines(Canvas canvas) {
-        for (int i = 1; i < dim; i++) {
-            canvas.drawLine(0, i * getHeight() / dim, getWidth(), i * getHeight() / dim, paintLine);
-            canvas.drawLine(i * getWidth() / dim, 0, i * getWidth() / dim, getHeight(), paintLine);
+        for (int i = 1; i < dimNotes; i++) {
+            canvas.drawLine(0, i * getHeight() / dimNotes, getWidth(), i * getHeight() / dimNotes, paintLine);
+        }
+        for (int i = 1; i < dimBeats; i++) {
+            canvas.drawLine(i * getWidth() / dimBeats, 0, i * getWidth() / dimBeats, getHeight(), paintLine);
         }
     }
 
     private void fillSquares(Canvas canvas) {
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                drawSquareAt(canvas, i, j);
+        for (int i = 0; i < dimBeats; i++) {
+            for (int j = 0; j < dimNotes; j++) {
+                drawRectAt(canvas, i, j);
             }
         }
     }
 
-    private void drawSquareAt(Canvas canvas, int i, int j) {
+    private void drawRectAt(Canvas canvas, int i, int j) {
         LoopGridSquare sqcontent = LoopGrid.getInstance().getFieldContent(i,j);
         if (sqcontent.isClicked()){
-            //canvas.drawBitmap(flagResized,i * getWidth() / 5,j * getHeight() / 5,paintLine);
-            canvas.drawRect(i * getHeight() / dim, (j)*getHeight()/dim,(i+1) * getHeight() / dim, (j+1)*getHeight()/dim, paintBgSquare);
+            canvas.drawRect(i * getHeight() / dimBeats, (j)*getHeight()/dimNotes,(i+1) * getHeight() / dimBeats, (j+1)*getHeight()/dimNotes, paintBgSquare);
         }
-        else {
-            //canvas.drawBitmap(mineResized,i * getWidth() / 5 + 5,j * getHeight() / 5 + 5,paintLine);
-        }
-
     }
 
     @Override
@@ -90,9 +88,9 @@ public class LoopGridView extends View{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            int tX = ((int) event.getX()) / (getWidth() / dim);
-            int tY = ((int) event.getY()) / (getHeight() / dim);
-            if (tX < dim && tY < dim) {clickSquare(tX, tY);}
+            int tX = ((int) event.getX()) / (getWidth() / dimBeats);
+            int tY = ((int) event.getY()) / (getHeight() / dimNotes);
+            if (tX < dimBeats && tY < dimNotes) {clickSquare(tX, tY);}
             invalidate();
             Log.d("TAG_CLICKED","Clicked at: ("+tX+", "+tY+")");
 
@@ -100,29 +98,40 @@ public class LoopGridView extends View{
         return false;
     }
 
-    private void clickSquare(int row, int column) {
-        LoopGrid.getInstance().setFieldContent(row,column);
+    private void clickSquare(int tX, int tY) {
+        LoopGrid.getInstance().setFieldClicked(tX,tY);
     }
 
-    public double getNoteFrequency(int noteY){
+    public double getNoteFrequency(int currentBeat, int note){
         double freq = 0;
         try {
-            freq = LoopGrid.getInstance().getFieldContent(getSelectedNote(noteY), noteY).getFrequency();
+            freq = LoopGrid.getInstance().getFieldContent(currentBeat, note).getFrequency();
         } catch (Exception e)
         {
-            Log.d("TAG_ERROR", "uh oh");
+            Log.d("TAG_REST", "rest");
             e.printStackTrace();
         }finally {
             return freq;
         }
     }
 
-    public int getSelectedNote(int noteY){
-        for (int x = 0; x < dim; x ++){
-            if (LoopGrid.getInstance().getFieldContent(x,noteY).isClicked()){return x;}
+    private int getSelectedBeat(int currentBeat) {
+        for (int row = 0; row < dimNotes; row ++){
+            if (LoopGrid.getInstance().getFieldContent(currentBeat,row).isClicked()){return row;}
         }
-        return 0;
+        return -1;
     }
 
+    public void clearGrid() {
+        for (int i = 0; i < dimBeats; i++){
+            for (int j = 0; j < dimNotes; j++){
+                LoopGrid.getInstance().getFieldContent(i,j).setClicked(false);
+                invalidate();
+            }
+        }
+    }
 
+    public void saveGrid(){
+
+    }
 }

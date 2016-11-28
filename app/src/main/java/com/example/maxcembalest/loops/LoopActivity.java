@@ -7,22 +7,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import com.example.maxcembalest.loops.grid.LoopGridView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoopActivity extends AppCompatActivity {
+import static com.example.maxcembalest.loops.grid.LoopGridView.dimBeats;
 
-    private double duration = 0.2; // seconds
+public class LoopActivity extends AppCompatActivity {
+    private int duractionMSecs = 500; //milliseconds
+    private double durationSecs = 0.5; // seconds.  These two variables must be changed simultaneously...this is dumb
     private final int sampleRate = 8000;
-    private int numSamples = (int) ( duration * sampleRate);
+    private int numSamples = (int) ( durationSecs * sampleRate);
     private double sample[];
 
     private boolean enabled;
-
-    private Timer timerMain;
 
     private int currentBeat=0;
 
@@ -33,13 +34,10 @@ public class LoopActivity extends AppCompatActivity {
     Handler handler = new Handler();
 
     private LoopGridView loopGridView;
+    DatabaseReference matricesRef = FirebaseDatabase.getInstance().getReference("matrices");
+    DatabaseReference rowsRef = FirebaseDatabase.getInstance().getReference("rows");
+    DatabaseReference sqsRef = FirebaseDatabase.getInstance().getReference("squares");
 
-    private Thread firstNote;
-    private Thread secondNote;
-    private Thread thirdNote;
-    private Thread fourthNote;
-
-    private Thread songLoop;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,46 +47,6 @@ public class LoopActivity extends AppCompatActivity {
         loopGridView = (LoopGridView) findViewById(R.id.loopGridView);
 
         ButterKnife.bind(this);
-
-        firstNote = new Thread() {
-            public void run() {
-                try {
-                    genTone(loopGridView.getNoteFrequency(0));
-                    playSound();
-                }
-                catch (Exception e) {}
-            }
-        };
-
-        secondNote = new Thread() {
-            public void run() {
-                try {
-                    genTone(loopGridView.getNoteFrequency(1));
-                    playSound();
-                }
-                catch (Exception e) {}
-            }
-        };
-
-        thirdNote = new Thread() {
-            public void run() {
-                try {
-                    genTone(loopGridView.getNoteFrequency(2));
-                    playSound();
-                }
-                catch (Exception e) {}
-            }
-        };
-
-        fourthNote = new Thread() {
-            public void run() {
-                try {
-                    genTone(loopGridView.getNoteFrequency(3));
-                    playSound();
-                }
-                catch (Exception e) {}
-            }
-        };
     }
 
     @OnClick(R.id.btnSound1)
@@ -96,19 +54,16 @@ public class LoopActivity extends AppCompatActivity {
         genTone(f.freqLowA);
         playSound();
     }
-
     @OnClick(R.id.btnSound2)
     void onClick2(){
         genTone(f.freqB);
         playSound();
     }
-
     @OnClick(R.id.btnSound3)
     void onClick3(){
         genTone(f.freqCSharp);
         playSound();
     }
-
     @OnClick(R.id.btnSound4)
     void onClick4(){
         genTone(f.freqE);
@@ -117,16 +72,25 @@ public class LoopActivity extends AppCompatActivity {
     @OnClick(R.id.btnPlay)
     void onClickPlay(){
         enabled=true;
-        timerMain=new Timer();
-        timerMain.schedule(new PlayLoopTask(),0,1000);
+        new PlayRow1Thread().start();
+        new PlayRow2Thread().start();
+        new PlayRow3Thread().start();
+        new PlayRow4Thread().start();
+        new PlayRow5Thread().start();
+        new PlayRow6Thread().start();
+        new PlayRow7Thread().start();
+        new PlayRow8Thread().start();
+
     }
     @OnClick(R.id.btnStop)
     void onClickStop(){
         enabled=false;
+        currentBeat=0;
     }
-
-
-
+    @OnClick(R.id.btnClear)
+    void onClickClear(){
+        loopGridView.clearGrid();
+    }
 
     @Override
     protected void onResume() {
@@ -149,8 +113,192 @@ public class LoopActivity extends AppCompatActivity {
 
     }
 
+    private class PlayRow1Thread extends Thread {
+        @Override
+        public void run(){
+            while (enabled){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat,0));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+                try {
+                    sleep(duractionMSecs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private class PlayRow2Thread extends Thread {
+        @Override
+        public void run(){
+            while (enabled){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat,1));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+                try {
+                    sleep(duractionMSecs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private class PlayRow3Thread extends Thread {
+        @Override
+        public void run(){
+            while (enabled){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat,2));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+                try {
+                    sleep(duractionMSecs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private class PlayRow4Thread extends Thread {
+        @Override
+        public void run(){
+            while (enabled){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat,3));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+                try {
+                    sleep(duractionMSecs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private class PlayRow5Thread extends Thread {
+        @Override
+        public void run(){
+            while (enabled){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat,4));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+                try {
+                    sleep(duractionMSecs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private class PlayRow6Thread extends Thread {
+        @Override
+        public void run(){
+            while (enabled){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat,5));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+                try {
+                    sleep(duractionMSecs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private class PlayRow7Thread extends Thread {
+        @Override
+        public void run(){
+            while (enabled){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat,6));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+                try {
+                    sleep(duractionMSecs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    private class PlayRow8Thread extends Thread {
+        @Override
+        public void run(){
+            while (enabled){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        genTone(loopGridView.getNoteFrequency(currentBeat,7));
+                        playSound();
+                        updateCurrentBeat();
+                    }
+                });
+                try {
+                    sleep(duractionMSecs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
     void genTone(double freqOfTone){
-        numSamples = (int) ( duration * sampleRate);
+        numSamples = (int) ( durationSecs * sampleRate);
         sample = new double[numSamples];
         generatedSnd = new byte[2 * numSamples];
         for (int i = 0; i < numSamples; ++i) {
@@ -166,7 +314,6 @@ public class LoopActivity extends AppCompatActivity {
             // in 16 bit wav PCM, first byte is the low order byte
             generatedSnd[idx++] = (byte) (val & 0x00ff);
             generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-
         }
     }
 
@@ -179,25 +326,7 @@ public class LoopActivity extends AppCompatActivity {
         audioTrack.play();
     }
 
-    private class PlayLoopTask extends TimerTask {
-        @Override
-        public void run(){
-            while(enabled) {
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat));
-                        playSound();
-                        updateCurrentBeat();
-                    }
-                });
-            }
-        }
-    }
-
     public void updateCurrentBeat(){
-        if (currentBeat<3){currentBeat++;}
-        else{currentBeat=0;}
+        currentBeat=(currentBeat+1)%dimBeats;
     }
 }

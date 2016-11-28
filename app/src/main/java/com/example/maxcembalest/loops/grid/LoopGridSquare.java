@@ -1,4 +1,6 @@
-package com.example.maxcembalest.loops;
+package com.example.maxcembalest.loops.grid;
+
+import com.example.maxcembalest.loops.Frequencies;
 
 /**
  * Created by maxcembalest on 11/21/16.
@@ -9,12 +11,13 @@ public class LoopGridSquare {
     private int beat;//numbered 0 through 7
     private boolean clicked;
     private double frequency;
+    private String soundKey;
     private Frequencies frequencies = new Frequencies();
 
-    public LoopGridSquare(int row, int column){
-        beat = column;
-        clicked = false;
-        frequency = frequencies.columnToFreq(column);
+    public LoopGridSquare(double freq, String key, boolean c){
+        clicked = c;
+        frequency = freq;
+        soundKey=key;
     }
 
     public int getBeat() {
@@ -39,5 +42,13 @@ public class LoopGridSquare {
 
     public void setFrequency(double frequency) {
         this.frequency = frequency;
+    }
+
+    public String getSoundKey() {
+        return soundKey;
+    }
+
+    public void setSoundKey(String soundKey) {
+        this.soundKey = soundKey;
     }
 }
