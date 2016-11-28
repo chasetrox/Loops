@@ -4,7 +4,7 @@ package com.example.maxcembalest.loops;
  * Created by maxcembalest on 11/28/16.
  */
 
-public class MatrixDataManger {
+public class MatrixDataManager {
 
 
 
