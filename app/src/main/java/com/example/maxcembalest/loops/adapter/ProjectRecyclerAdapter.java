@@ -45,6 +45,8 @@ public class ProjectRecyclerAdapter extends
         holder.tvName.setText(songList.get(position).getName());
     }
 
+
+
     @Override
     public int getItemCount() {
         return songList.size();
