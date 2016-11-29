@@ -35,8 +35,6 @@ public class ProjectsActivity extends AppCompatActivity
         setContentView(R.layout.activity_projects);
         setupUI();
 
-        MatrixDataManager.getInstance().save(); //TODO remove from this class, it's just a tester
-
         projectRecycler = (RecyclerView) findViewById(
                 R.id.projectRecycler);
         projectRecycler.setHasFixedSize(true);

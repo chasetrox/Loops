@@ -1,11 +1,13 @@
 package com.example.maxcembalest.loops;
 
+import android.graphics.Matrix;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.maxcembalest.loops.grid.LoopGridView;
@@ -117,7 +119,9 @@ public class LoopActivity extends AppCompatActivity {
     }
     @OnClick(R.id.btnSave)
     void onClickSave(){
+        Log.d("ONCLICKSAVE", "IN ON CLICK SAVE");
         Toast.makeText(this,"tested save button", Toast.LENGTH_SHORT).show();
+        MatrixDataManager.getInstance().save();
     }
 
     @Override
