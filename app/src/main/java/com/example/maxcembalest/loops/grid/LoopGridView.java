@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import static com.example.maxcembalest.loops.LoopActivity.dimBeats;
+import static com.example.maxcembalest.loops.LoopActivity.dimNotes;
+
 /**
  * Created by maxcembalest on 11/19/16.
  */
@@ -17,8 +20,6 @@ public class LoopGridView extends View{
 
     private Paint paintLine;
     private Paint paintBgSquare;
-    public static int dimNotes = 4;
-    public static int dimBeats = 4;
 
     public LoopGridView(Context context){
         super(context);
@@ -36,8 +37,6 @@ public class LoopGridView extends View{
         paintBgSquare = new Paint();
         paintBgSquare.setColor(Color.WHITE);
         paintBgSquare.setStyle(Paint.Style.FILL);
-
-
     }
 
     @Override
@@ -104,20 +103,15 @@ public class LoopGridView extends View{
 
     public double getNoteFrequency(int beat, int note){
         double freq = 0;
-        try {
+        if (note < dimNotes) {
             //freq = LoopGrid.getInstance().getRow(note).getFrequency();
             MatrixRow r = LoopGrid.getInstance().getRow(note);
             LoopGridSquare sq = r.getSqJ(beat);
             if (sq.isClicked()){
                 freq = r.getFrequency();
             }
-        } catch (Exception e)
-        {
-            Log.d("TAG_REST", "rest for thread "+note);
-            e.printStackTrace();
-        }finally {
-            return freq;
         }
+        return freq;
     }
 
     public void clearGrid() {
@@ -129,7 +123,4 @@ public class LoopGridView extends View{
         }
     }
 
-    public void saveGrid(){
-
-    }
 }

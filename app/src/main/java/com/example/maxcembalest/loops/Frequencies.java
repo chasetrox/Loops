@@ -6,14 +6,14 @@ package com.example.maxcembalest.loops;
 
 public class Frequencies {
 
-    public double freqLowG = 392.00;
-    public double freqLowA = 440.00;
-    public double freqLowB = 493.88;
-    public double freqD = 587.33;
-    public double freqE = 659.25;
-    public double freqHighG = 783.99;
-    public double freqHighA = 880.00;
-    public double freqHighB = 987.77;
+    private double freqLowG = 196.0;
+    private double freqLowA = 220.0;
+    private double freqLowB = 246.94;
+    private double freqD = 293.66;
+    private double freqE = 329.63;
+    private double freqHighG = 392.0;
+    private double freqHighA = 440.0;
+    private double freqHighB = 493.88;
 
     public Frequencies() {
     }

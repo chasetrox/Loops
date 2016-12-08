@@ -1,22 +1,18 @@
 package com.example.maxcembalest.loops;
 
-import android.graphics.Matrix;
 import android.util.Log;
 
 import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.MatrixRow;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import static com.example.maxcembalest.loops.grid.LoopGridView.dimBeats;
-import static com.example.maxcembalest.loops.grid.LoopGridView.dimNotes;
+import static com.example.maxcembalest.loops.LoopActivity.dimBeats;
+import static com.example.maxcembalest.loops.LoopActivity.dimNotes;
+
 
 /**
  * Created by maxcembalest on 11/28/16.

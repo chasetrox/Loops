@@ -2,8 +2,8 @@ package com.example.maxcembalest.loops.grid;
 
 import com.example.maxcembalest.loops.Frequencies;
 
-import static com.example.maxcembalest.loops.grid.LoopGridView.dimBeats;
-import static com.example.maxcembalest.loops.grid.LoopGridView.dimNotes;
+import static com.example.maxcembalest.loops.LoopActivity.dimBeats;
+import static com.example.maxcembalest.loops.LoopActivity.dimNotes;
 
 /**
  * Created by maxcembalest on 11/21/16.
@@ -43,6 +43,10 @@ public class LoopGrid {
         }
     }
 
+    public void populateGrid(ToneMatrix tm){
+
+    }
+
     public LoopGridSquare getFieldContent(int x, int y){
         //return model[x][y];}
         return model.getRowI(y).getSqJ(x);
@@ -58,6 +62,7 @@ public class LoopGrid {
     }
 
    // public void setField
+
 
 
 }

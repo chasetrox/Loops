@@ -1,13 +1,8 @@
 package com.example.maxcembalest.loops;
 
-import android.graphics.Matrix;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.maxcembalest.loops.grid.LoopGridView;
@@ -15,343 +10,186 @@ import com.example.maxcembalest.loops.grid.LoopGridView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.example.maxcembalest.loops.grid.LoopGridView.dimBeats;
-
-public class LoopActivity extends AppCompatActivity {
-    private int duractionMSecs = 500; //milliseconds
-    private double durationSecs = 0.5; // seconds.  These two variables must be changed simultaneously...this is dumb
-    private final int sampleRate = 8000;
-    private int numSamples = (int) ( durationSecs * sampleRate);
-    private double sample[];
-
-    private boolean enabled;
-
-    private int currentBeat=0;
+public class LoopActivity extends BaseActivity implements OnLoopSettingsFragmentAnswer{
+    static final String KEY_ROW = "KEY_ROW";
+    static final String KEY_COL = "KEY_COL";
+    static final String SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT";
 
     private final Frequencies f = new Frequencies();
-
-    private byte generatedSnd[] = new byte[2 * numSamples];
-
-    Handler handler = new Handler();
-
     private LoopGridView loopGridView;
+
+    public static long durationMSecs = 500;
+    public static int dimNotes = 6;
+    public static int dimBeats = 6;
+
+    private boolean playing = false;
+    private int currentBeat = 0;
+    private PlayRowThread[] rows = new PlayRowThread[8];
+    private UpdateBeat beatThread;
+
+    private ImageView playIcon;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loop);
-
-        loopGridView = (LoopGridView) findViewById(R.id.loopGridView);
-
+        setupViews();
         ButterKnife.bind(this);
+        setupThreads();
+    }
+
+    private void setupViews() {
+        loopGridView = (LoopGridView) findViewById(R.id.loopGridView);
+        playIcon = (ImageView) findViewById(R.id.ivPlay);
+    }
+
+    private void setupThreads() {
+        for (int i = 0; i < 8; i++) {
+            rows[i] = new PlayRowThread(i);
+        }
+        beatThread = new UpdateBeat();
     }
 
     @OnClick(R.id.btnSound1)
-    void onClick1(){
-        genTone(f.getFreqLowG());
-        playSound();
+    void onClick1() {
+        AudioGenerator.getInstance().playSingle(f.getFreqLowG());
     }
-    @OnClick(R.id.btnSound2)
-    void onClick2(){
-        genTone(f.getFreqLowA());
-        playSound();
+
+    @OnClick(R.id.btnNumRows)
+    void onClick2() {
+        AudioGenerator.getInstance().playSingle(f.getFreqLowA());
     }
-    @OnClick(R.id.btnSound3)
-    void onClick3(){
-        genTone(f.getFreqLowB());
-        playSound();
+
+    @OnClick(R.id.btnNumCols)
+    void onClick3() {
+        AudioGenerator.getInstance().playSingle(f.getFreqLowB());
     }
-    @OnClick(R.id.btnSound4)
-    void onClick4(){
-        genTone(f.getFreqE());
-        playSound();
+
+    @OnClick(R.id.btnDuration)
+    void onClick4() {
+        AudioGenerator.getInstance().playSingle(f.getFreqD());
     }
-    @OnClick(R.id.btnPlay)
-    void onClickPlay(){
-        enabled=true;
-        /*
-        new PlayRow1Thread().start();
-        if (dimNotes>1){
-            new PlayRow2Thread().start();
-            if (dimNotes>2){
-                new PlayRow3Thread().start();
-                if (dimNotes>3){
-                    new PlayRow4Thread().start();
-                    if (dimNotes>4){
-                        new PlayRow5Thread().start();
-                        if (dimNotes>5){
-                            new PlayRow6Thread().start();
-                            if (dimNotes>6){
-                                new PlayRow7Thread().start();
-                                if (dimNotes>7){
-                                    new PlayRow8Thread().start();
-                                }
-                            }
 
-                        }
 
-                    }
+    private void playToneAtBeat(int note, int beat) {
+        AudioGenerator.getInstance().playNote(loopGridView.getNoteFrequency(beat, note), note);
+    }
 
-                }
+    private class PlayThread extends Thread{
+        private boolean playEnabled = true;
 
+        public void run(){
+            while (playEnabled) {
+                startRowThreads();
+                freezeRowThreads();
+
+                startBeatThread();
+                freezeBeatThread();
             }
+        }
 
-        }*/
-        new PlayRow1Thread().start();
-        new PlayRow2Thread().start();
-        new PlayRow3Thread().start();
-        new PlayRow4Thread().start();
-        new PlayRow5Thread().start();
-        new PlayRow6Thread().start();
-        new PlayRow7Thread().start();
-        new PlayRow8Thread().start();
-
-
+        public void setPlayEnabled(boolean playEnabled) {
+            this.playEnabled = playEnabled;
+        }
     }
+
+    private void freezeBeatThread() {
+        try {
+            beatThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startBeatThread() {
+        beatThread = new UpdateBeat();
+        beatThread.start();
+    }
+
+    private void freezeRowThreads() {
+        try {
+            for (int i = 0; i < 8; i++){
+                rows[i].join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void startRowThreads() {
+        for (int i = 0; i < 8; i++){
+            rows[i] = new PlayRowThread(i);
+            rows[i].start();
+        }
+    }
+
+    private PlayThread playThread;
+
+    @OnClick(R.id.btnPlay)
+    void onClickPlay() {
+        if (!playing) {
+            playIcon.setVisibility(View.VISIBLE);
+            playing = true;
+
+            playThread = new PlayThread();
+            playThread.start();
+
+
+        }
+    }
+
     @OnClick(R.id.btnStop)
-    void onClickStop(){
-        enabled=false;
-        currentBeat=0;
+    void onClickStop() {
+        playing = false;
+        playThread.setPlayEnabled(false);
+        currentBeat = 0;
+        playIcon.setVisibility(View.INVISIBLE);
     }
+
     @OnClick(R.id.btnClear)
-    void onClickClear(){
+    void onClickClear() {
         loopGridView.clearGrid();
     }
+
     @OnClick(R.id.btnSave)
-    void onClickSave(){
-        Log.d("ONCLICKSAVE", "IN ON CLICK SAVE");
-        Toast.makeText(this,"tested save button", Toast.LENGTH_SHORT).show();
+    void onClickSave() {
         MatrixDataManager.getInstance().save();
+        Toast.makeText(this, "Saved :)", Toast.LENGTH_SHORT).show();
+    }
+
+    private class PlayRowThread extends Thread {
+        private int row;
+        public PlayRowThread(int row) {this.row = row;}
+        public void run() {playToneAtBeat(row, currentBeat);}
+    }
+
+    private void updateCurrentBeat() {
+        currentBeat = (currentBeat + 1) % dimBeats;
+    }
+
+    private class UpdateBeat extends Thread {
+        public void run() {
+            updateCurrentBeat();
+            try {sleep(durationMSecs);}
+            catch (Exception e) {e.printStackTrace();}
+        }
+    }
+
+    //from the Settings fragment
+    @Override
+    public void onPositiveSelected(String row, String col) {
+        int newRow = Integer.parseInt(row)-1;
+        int newCol = Integer.parseInt(col)-1;
+        dimNotes=newRow;
+        dimBeats=newCol;
+        loopGridView.invalidate();
+
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        /* Use a new tread as this can take a while
-        final Thread thread = new Thread(new Runnable() {
-            public void run() {
-                genTone();
-                handler.post(new Runnable() {
-
-                    public void run() {
-                        playSound(generatedSnd.length);
-                    }
-                });
-            }
-        });
-        thread.start();*/
-
+    public void onNegativeSelected() {
 
     }
 
-    private class PlayRow1Thread extends Thread {
-        @Override
-        public void run(){
-            while (enabled){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat,0));
-                        playSound();
-                        updateCurrentBeat();
-                    }
-                });
-                try {
-                    sleep(duractionMSecs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    private class PlayRow2Thread extends Thread {
-        @Override
-        public void run(){
-            while (enabled){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat,1));
-                        playSound();
-                    }
-                });
-                try {
-                    sleep(duractionMSecs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    private class PlayRow3Thread extends Thread {
-        @Override
-        public void run(){
-            while (enabled){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat,2));
-                        playSound();
-                    }
-                });
-                try {
-                    sleep(duractionMSecs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    private class PlayRow4Thread extends Thread {
-        @Override
-        public void run(){
-            while (enabled){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat,3));
-                        playSound();
-                    }
-                });
-                try {
-                    sleep(duractionMSecs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    private class PlayRow5Thread extends Thread {
-        @Override
-        public void run(){
-            while (enabled){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat,4));
-                        playSound();
-                    }
-                });
-                try {
-                    sleep(duractionMSecs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    private class PlayRow6Thread extends Thread {
-        @Override
-        public void run(){
-            while (enabled){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat,5));
-                        playSound();
-                    }
-                });
-                try {
-                    sleep(duractionMSecs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    private class PlayRow7Thread extends Thread {
-        @Override
-        public void run(){
-            while (enabled){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat,6));
-                        playSound();
-                    }
-                });
-                try {
-                    sleep(duractionMSecs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    private class PlayRow8Thread extends Thread {
-        @Override
-        public void run(){
-            while (enabled){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        genTone(loopGridView.getNoteFrequency(currentBeat,7));
-                        playSound();
-                    }
-                });
-                try {
-                    sleep(duractionMSecs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    void genTone(double freqOfTone){
-        numSamples = (int) ( durationSecs * sampleRate);
-        sample = new double[numSamples];
-        generatedSnd = new byte[2 * numSamples];
-        for (int i = 0; i < numSamples; ++i) {
-            sample[i] = Math.sin(2 * Math.PI * i / (sampleRate/freqOfTone));
-        }
-
-        // convert to 16 bit pcm sound array
-        // assumes the sample buffer is normalised.
-        int idx = 0;
-        for (final double dVal : sample) {
-            // scale to maximum amplitude
-            final short val = (short) ((dVal * 32767));
-            // in 16 bit wav PCM, first byte is the low order byte
-            generatedSnd[idx++] = (byte) (val & 0x00ff);
-            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
-        }
-    }
-
-    void playSound(){
-        final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                sampleRate, AudioFormat.CHANNEL_OUT_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT, generatedSnd.length,
-                AudioTrack.MODE_STATIC);
-        audioTrack.write(generatedSnd, 0, generatedSnd.length);
-        audioTrack.play();
-    }
-
-    public void updateCurrentBeat(){
-        currentBeat=(currentBeat+1)%dimBeats;
-    }
 }

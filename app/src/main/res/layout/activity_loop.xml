@@ -17,25 +17,25 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/btnSound4"
+            android:id="@+id/btnDuration"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Sound 4"/>
+            android:text="Duration"/>
 
         <Button
-            android:id="@+id/btnSound3"
+            android:id="@+id/btnNumRows"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Sound 3"/>
+            android:text="Notes"/>
 
         <Button
-            android:id="@+id/btnSound2"
+            android:id="@+id/btnNumCols"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Sound 2"/>
+            android:text="Beats"/>
 
         <Button
             android:id="@+id/btnSound1"
@@ -56,6 +56,13 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:text="Stop"/>
+
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Settings"/>
 
     </LinearLayout>
 
@@ -79,6 +86,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save loop"/>
+
+        <ImageView
+            android:id="@+id/ivPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:src="@drawable/play"
+            />
 
     </LinearLayout>
 
