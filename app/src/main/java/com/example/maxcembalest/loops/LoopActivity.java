@@ -10,17 +10,16 @@ import com.example.maxcembalest.loops.grid.LoopGridView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoopActivity extends BaseActivity implements OnLoopSettingsFragmentAnswer{
-    static final String KEY_ROW = "KEY_ROW";
-    static final String KEY_COL = "KEY_COL";
-    static final String SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT";
+public class LoopActivity extends BaseActivity implements FragmentChangeDim.OptionsFragmentInterface{
+    public static final String KEY_TYPE = "KEY_TYPE";
+    private static final String DIM_FRAGMENT = "DIM_FRAGMENT";
 
     private final Frequencies f = new Frequencies();
     private LoopGridView loopGridView;
 
-    public static long durationMSecs = 500;
-    public static int dimNotes = 6;
-    public static int dimBeats = 6;
+    public static int durationMSecs = 500;
+    public static int dimNotes = 8;
+    public static int dimBeats = 8;
 
     private boolean playing = false;
     private int currentBeat = 0;
@@ -28,6 +27,8 @@ public class LoopActivity extends BaseActivity implements OnLoopSettingsFragment
     private UpdateBeat beatThread;
 
     private ImageView playIcon;
+
+    private IntroThread introThread = new IntroThread();
 
 
     @Override
@@ -37,6 +38,7 @@ public class LoopActivity extends BaseActivity implements OnLoopSettingsFragment
         setupViews();
         ButterKnife.bind(this);
         setupThreads();
+        introThread.start();
     }
 
     private void setupViews() {
@@ -51,29 +53,72 @@ public class LoopActivity extends BaseActivity implements OnLoopSettingsFragment
         beatThread = new UpdateBeat();
     }
 
-    @OnClick(R.id.btnSound1)
-    void onClick1() {
-        AudioGenerator.getInstance().playSingle(f.getFreqLowG());
-    }
-
     @OnClick(R.id.btnNumRows)
     void onClick2() {
-        AudioGenerator.getInstance().playSingle(f.getFreqLowA());
+        startFragDim("row");
     }
 
     @OnClick(R.id.btnNumCols)
     void onClick3() {
-        AudioGenerator.getInstance().playSingle(f.getFreqLowB());
+        startFragDim("col");
     }
 
     @OnClick(R.id.btnDuration)
     void onClick4() {
-        AudioGenerator.getInstance().playSingle(f.getFreqD());
+        startFragDim("dur");
     }
 
+    @OnClick(R.id.btnPlay)
+    void onClickPlay() {
+        if (!playing) {
+            playIcon.setVisibility(View.VISIBLE);
+            playing = true;
+            playThread = new PlayThread();
+            playThread.start();
+        }
+    }
 
-    private void playToneAtBeat(int note, int beat) {
-        AudioGenerator.getInstance().playNote(loopGridView.getNoteFrequency(beat, note), note);
+    @OnClick(R.id.btnStop)
+    void onClickStop() {
+        playing = false;
+        playThread.setPlayEnabled(false);
+        currentBeat = 0;
+        playIcon.setVisibility(View.INVISIBLE);
+    }
+
+    @OnClick(R.id.btnClear)
+    void onClickClear() {
+        loopGridView.clearGrid();
+    }
+
+    @OnClick(R.id.btnSave)
+    void onClickSave() {
+        MatrixDataManager.getInstance().save();
+        Toast.makeText(this, "Saved :)", Toast.LENGTH_SHORT).show();
+    }
+
+    private void startFragDim(String type) {
+        FragmentChangeDim dimFragment = new FragmentChangeDim();
+        dimFragment.setCancelable(true);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TYPE,type);
+        dimFragment.setArguments(bundle);
+
+        dimFragment.show(getSupportFragmentManager(),DIM_FRAGMENT);
+    }
+
+    @Override
+    public void onOptionsFragmentResult(String newItem,String type) {
+        switch (type){
+            case "row":
+                dimNotes=Integer.parseInt(newItem);break;
+            case "col":
+                dimBeats=Integer.parseInt(newItem);break;
+            case "dur":
+                durationMSecs=Integer.parseInt(newItem);break;
+        }
+        loopGridView.invalidate();
     }
 
     private class PlayThread extends Thread{
@@ -126,42 +171,16 @@ public class LoopActivity extends BaseActivity implements OnLoopSettingsFragment
 
     private PlayThread playThread;
 
-    @OnClick(R.id.btnPlay)
-    void onClickPlay() {
-        if (!playing) {
-            playIcon.setVisibility(View.VISIBLE);
-            playing = true;
 
-            playThread = new PlayThread();
-            playThread.start();
-
-
-        }
-    }
-
-    @OnClick(R.id.btnStop)
-    void onClickStop() {
-        playing = false;
-        playThread.setPlayEnabled(false);
-        currentBeat = 0;
-        playIcon.setVisibility(View.INVISIBLE);
-    }
-
-    @OnClick(R.id.btnClear)
-    void onClickClear() {
-        loopGridView.clearGrid();
-    }
-
-    @OnClick(R.id.btnSave)
-    void onClickSave() {
-        MatrixDataManager.getInstance().save();
-        Toast.makeText(this, "Saved :)", Toast.LENGTH_SHORT).show();
-    }
 
     private class PlayRowThread extends Thread {
         private int row;
         public PlayRowThread(int row) {this.row = row;}
         public void run() {playToneAtBeat(row, currentBeat);}
+    }
+
+    private void playToneAtBeat(int note, int beat) {
+        AudioGenerator.getInstance().playNote(loopGridView.getNoteFrequency(beat, note), note);
     }
 
     private void updateCurrentBeat() {
@@ -176,20 +195,49 @@ public class LoopActivity extends BaseActivity implements OnLoopSettingsFragment
         }
     }
 
-    //from the Settings fragment
-    @Override
-    public void onPositiveSelected(String row, String col) {
-        int newRow = Integer.parseInt(row)-1;
-        int newCol = Integer.parseInt(col)-1;
-        dimNotes=newRow;
-        dimBeats=newCol;
-        loopGridView.invalidate();
-
+    private class IntroThread extends Thread{
+        public void run(){
+            playTone3();
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            playTone2();
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            playTone1();
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            playTone2();
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            playTone3();
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    @Override
-    public void onNegativeSelected() {
-
+    private void playTone3(){
+        AudioGenerator.getInstance().playSingle(f.getFreqHighB());
+    }
+    private void playTone2(){
+        AudioGenerator.getInstance().playSingle(f.getFreqHighA());
+    }
+    private void playTone1(){
+        AudioGenerator.getInstance().playSingle(f.getFreqHighG());
     }
 
 }

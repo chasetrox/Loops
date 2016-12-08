@@ -28,21 +28,15 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Notes"/>
+            android:text="Note dim"/>
 
         <Button
             android:id="@+id/btnNumCols"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Beats"/>
+            android:text="Beat dim"/>
 
-        <Button
-            android:id="@+id/btnSound1"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Sound 1"/>
 
         <Button
             android:id="@+id/btnPlay"
@@ -57,12 +51,6 @@
             android:layout_weight="1"
             android:text="Stop"/>
 
-        <Button
-            android:id="@+id/btnSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Settings"/>
 
     </LinearLayout>
 
