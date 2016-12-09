@@ -37,19 +37,21 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+        users = User.listAll(User.class);
+        if (users.size()>0){
+            showProgressDialog();
+            signIn(users.get(0).getEmail(),users.get(0).getPassword());
+        }
 
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
 
         ButterKnife.bind(this);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        firebaseAuth = FirebaseAuth.getInstance();
 
-        users = User.listAll(User.class);
-        if (users.size()>0){
-            signIn(users.get(0).getEmail(),users.get(0).getPassword());
-        }
+
 
     }
 

@@ -12,33 +12,54 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
 import com.example.maxcembalest.loops.usermodel.User;
+import com.orm.SchemaGenerator;
+import com.orm.SugarContext;
+import com.orm.SugarDb;
 
 import java.util.List;
 
 public class ProjectsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    private TextView tvUsername;
     private ProjectRecyclerAdapter projectRecyclerAdapter;
     private RecyclerView projectRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
         setupUI();
 
+        setupRecycler();
+        setupNavUsername();
+    }
+
+    private void setupRecycler() {
         projectRecycler = (RecyclerView) findViewById(
                 R.id.projectRecycler);
         projectRecycler.setHasFixedSize(true);
         projectRecycler.setLayoutManager(new GridLayoutManager(this, 2));
         projectRecyclerAdapter = new ProjectRecyclerAdapter();
         projectRecycler.setAdapter(projectRecyclerAdapter);
+    }
+
+    private void setupNavUsername() {
+        List<User> users = User.listAll(User.class);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View header=navigationView.getHeaderView(0);
+        tvUsername = (TextView) header.findViewById(R.id.tvUsername);
+        tvUsername.setText(users.get(0).getUsername());
     }
 
     private void setupUI() {
@@ -87,11 +108,7 @@ public class ProjectsActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -111,13 +128,20 @@ public class ProjectsActivity extends AppCompatActivity
             startActivity(new Intent(ProjectsActivity.this,LoopActivity.class));
         } else if (id == R.id.nav_logout) {
             //Toast.makeText(this,"Logout",Toast.LENGTH_SHORT).show();
-            List<User> users = User.listAll(User.class);
-            users.clear();
-            startActivity(new Intent(ProjectsActivity.this,LoginActivity.class));
+            logout();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logout() {
+        SugarContext.terminate();
+        SchemaGenerator schemaGenerator = new SchemaGenerator(getApplicationContext());
+        schemaGenerator.deleteTables(new SugarDb(getApplicationContext()).getDB());
+        SugarContext.init(getApplicationContext());
+        schemaGenerator.createDatabase(new SugarDb(getApplicationContext()).getDB());
+        startActivity(new Intent(ProjectsActivity.this,LoginActivity.class));
     }
 }
