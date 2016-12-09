@@ -15,6 +15,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
+import com.example.maxcembalest.loops.usermodel.User;
+
+import java.util.List;
 
 public class ProjectsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -106,6 +109,11 @@ public class ProjectsActivity extends AppCompatActivity
             Toast.makeText(this,"Message fragment with our emails and github links",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_editor) {
             startActivity(new Intent(ProjectsActivity.this,LoopActivity.class));
+        } else if (id == R.id.nav_logout) {
+            //Toast.makeText(this,"Logout",Toast.LENGTH_SHORT).show();
+            List<User> users = User.listAll(User.class);
+            users.clear();
+            startActivity(new Intent(ProjectsActivity.this,LoginActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
