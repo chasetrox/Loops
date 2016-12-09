@@ -2,24 +2,19 @@ package com.example.maxcembalest.loops;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
 
 public class ProjectsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -46,8 +41,6 @@ public class ProjectsActivity extends AppCompatActivity
     private void setupUI() {
         Toolbar toolbar = setupToolbar();
 
-        setupABtn();
-
         setupDrawer(toolbar);
 
         setupNavView();
@@ -70,25 +63,6 @@ public class ProjectsActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-    }
-
-    private void setupABtn() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setImageResource(R.drawable.loops_logo_no_word);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(ProjectsActivity.this,LoopActivity.class));
-            }
-        });
-
-        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(ProjectsActivity.this,AndroidSoundPoolExample.class));
-            }
-        });
     }
 
     @Override
@@ -115,32 +89,23 @@ public class ProjectsActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_about) {
+            Toast.makeText(this,"Message fragment with info and help",Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_send_loop) {
+            Toast.makeText(this,"Database stuff",Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_contact) {
+            Toast.makeText(this,"Message fragment with our emails and github links",Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_editor) {
+            startActivity(new Intent(ProjectsActivity.this,LoopActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
