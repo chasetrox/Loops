@@ -13,12 +13,26 @@
     tools:context="com.example.maxcembalest.loops.ProjectsActivity"
     tools:showIn="@layout/app_bar_projects">
 
-    <android.support.v7.widget.RecyclerView
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.PagerTabStrip
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            />
+
+
+    </android.support.v4.view.ViewPager>
+
+    <!-- <android.support.v7.widget.RecyclerView
         android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/projectRecycler">
 
-    </android.support.v7.widget.RecyclerView>
+    </android.support.v7.widget.RecyclerView>-->
 
 </RelativeLayout>

@@ -39,13 +39,14 @@ public class MyLoopsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Query q = FirebaseDatabase.getInstance().getReference().child("users/"+user+"/loops/");
 
-        View rootView = inflater.inflate(R.layout.recycler_view_frag, container, false);
+        View rootView = inflater.inflate(R.layout.my_loops_fragment, container, false);
         rootView.setTag(TAG);
 
-        projectRecycler = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        projectRecycler = (RecyclerView) rootView.findViewById(R.id.myLoopsRecycler);
         projectRecycler.setHasFixedSize(true);
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
