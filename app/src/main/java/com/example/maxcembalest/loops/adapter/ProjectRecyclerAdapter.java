@@ -17,6 +17,9 @@ import com.example.maxcembalest.loops.R;
 import com.example.maxcembalest.loops.data.Song;
 import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.ToneMatrix;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
@@ -28,11 +31,12 @@ import java.util.List;
  */
 
 public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyclerAdapter.ViewHolder, ToneMatrix> {
-
+    Query q;
 
 
     public ProjectRecyclerAdapter(Query query, Class<ToneMatrix> itemClass) {
         super(query, itemClass);
+        q = query;
     }
 
     public ProjectRecyclerAdapter(Query query, Class<ToneMatrix> itemClass, @Nullable ArrayList<ToneMatrix> items, @Nullable ArrayList<String> keys) {
@@ -61,6 +65,20 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
                 context.startActivity(toLoopActivity);
             }
         });
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int pos = getPositionForItem(item);
+                final String key = getKeys().get(pos);
+                q.getRef().child(key).removeValue(new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        itemRemoved(item, key, holder.getAdapterPosition());
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -77,7 +95,8 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
 
     @Override
     protected void itemRemoved(ToneMatrix item, String key, int position) {
-
+        notifyItemRemoved(position);
+        Log.d("MyAdapter", "Deleted a loop @"+position);
     }
 
     @Override
@@ -91,10 +110,12 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
         private TextView tvName;
         private boolean isPlaying;
         private RelativeLayout cell;
+        private TextView delete;
 
         public ViewHolder(View itemView) {
             super(itemView);
             isPlaying = false;
+            delete = (TextView) itemView.findViewById(R.id.deleteText);
             cell = (RelativeLayout) itemView.findViewById(R.id.cellView);
             playBtn = (ImageView) itemView.findViewById(R.id.playButton);
             tvName = (TextView) itemView.findViewById(R.id.projName);
