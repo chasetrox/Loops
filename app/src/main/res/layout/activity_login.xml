@@ -34,7 +34,6 @@
                 android:layout_height="wrap_content"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:text="mcembalest@wesleyan.edu"
                 android:textColor="@color/white" />
         </android.support.design.widget.TextInputLayout>
 
@@ -50,7 +49,6 @@
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:text="password"
                 android:textColor="@color/white" />
         </android.support.design.widget.TextInputLayout>
 

@@ -17,6 +17,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -30,18 +32,27 @@ public class LoginActivity extends BaseActivity {
 
     DatabaseReference databaseReference;
     FirebaseAuth firebaseAuth;
+    List<User> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+        users = User.listAll(User.class);
+        if (users.size()>0){
+            showProgressDialog();
+            signIn(users.get(0).getEmail(),users.get(0).getPassword());
+        }
 
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
 
         ButterKnife.bind(this);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        firebaseAuth = FirebaseAuth.getInstance();
+
+
+
     }
 
     @OnClick(R.id.btnRegister)
@@ -63,8 +74,9 @@ public class LoginActivity extends BaseActivity {
                             fbUser.updateProfile(new UserProfileChangeRequest.Builder().
                                     setDisplayName(usernameFromEmail(fbUser.getEmail())).build());
 
-                            User user = new User(fbUser.getEmail(), usernameFromEmail(fbUser.getEmail()));
+                            User user = new User(fbUser.getEmail(), usernameFromEmail(fbUser.getEmail()),etPassword.getText().toString());
                             databaseReference.child("users").child(fbUser.getUid()).setValue(user);
+
 
                             Toast.makeText(LoginActivity.this, "User created", Toast.LENGTH_SHORT).show();
                         } else {
@@ -73,6 +85,7 @@ public class LoginActivity extends BaseActivity {
                         }
                     }
                 });
+
     }
 
     @OnClick(R.id.btnLogin)
@@ -82,10 +95,15 @@ public class LoginActivity extends BaseActivity {
         if (!isFormValid()) {
             return;
         }
-
+        User newUser = new User(etEmail.getText().toString(),usernameFromEmail(etEmail.getText().toString()),etPassword.getText().toString());
+        newUser.save();
         showProgressDialog();
 
-        firebaseAuth.signInWithEmailAndPassword(etEmail.getText().toString(),etPassword.getText().toString()).
+        signIn(etEmail.getText().toString(),etPassword.getText().toString());
+    }
+
+    private void signIn(String email, String password) {
+        firebaseAuth.signInWithEmailAndPassword(email,password).
                 addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
