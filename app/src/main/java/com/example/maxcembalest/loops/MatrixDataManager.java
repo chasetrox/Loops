@@ -112,7 +112,7 @@ public class MatrixDataManager {
         return tm;
     }
 
-    private void populateTMfromHash(HashMap<String, Object> hm, ToneMatrix tm) {
+    public void populateTMfromHash(HashMap<String, Object> hm, ToneMatrix tm) {
         String cm = (String) hm.get("checkMap");
         HashMap<String,Double> freqs = (HashMap<String,Double>) hm.get("freqs");
         HashMap<String,String> sk = (HashMap<String,String>) hm.get("soundkeys");
