@@ -27,7 +27,10 @@ import java.util.List;
 public class ProjectsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
+    public static final String KEY_MSG = "KEY_MSG";
+    public final String ABOUT = getString(R.string.about);
+    private final String Message_Fragment = getString(R.string.messageFragment);
+    public final String CONTACT = getString(R.string.contact);
     private TextView tvUsername;
     private ProjectRecyclerAdapter projectRecyclerAdapter;
     private RecyclerView projectRecycler;
@@ -119,11 +122,11 @@ public class ProjectsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_about) {
-            Toast.makeText(this,"Message fragment with info and help",Toast.LENGTH_SHORT).show();
+            showMessage(ABOUT);
         } else if (id == R.id.nav_send_loop) {
             Toast.makeText(this,"Database stuff",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_contact) {
-            Toast.makeText(this,"Message fragment with our emails and github links",Toast.LENGTH_SHORT).show();
+            showMessage(CONTACT);
         } else if (id == R.id.nav_editor) {
             startActivity(new Intent(ProjectsActivity.this,LoopActivity.class));
         } else if (id == R.id.nav_logout) {
@@ -134,6 +137,16 @@ public class ProjectsActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showMessage(String s) {
+        FragmentMessage fragmentMessage = new FragmentMessage();
+        fragmentMessage.setCancelable(true);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_MSG,s);
+        fragmentMessage.setArguments(bundle);
+
+        fragmentMessage.show(getSupportFragmentManager(),Message_Fragment);
     }
 
     private void logout() {
