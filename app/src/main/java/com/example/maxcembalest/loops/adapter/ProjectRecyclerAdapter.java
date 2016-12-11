@@ -2,6 +2,7 @@ package com.example.maxcembalest.loops.adapter;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,17 +35,22 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        Log.d("onbind", "In onbind");
+        View loopCell = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.project_icon,parent,false);
+        return new ViewHolder(loopCell);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        ToneMatrix item = getItem(position);
+        Log.d("onbind", "In onbind");
+        holder.tvName.setText("Loop name");
     }
 
     @Override
     protected void itemAdded(ToneMatrix item, String key, int position) {
-
+        Log.d("MyAdapter", "Added a new item to the adapter.");
     }
 
     @Override
@@ -64,13 +70,13 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textViewName;
-        TextView textViewAge;
+        private ImageView infoBtn;
+        private TextView tvName;
 
-        public ViewHolder(View view) {
-            super(view);
-            //textViewName = (TextView) view.findViewById(R.id.textview_name);
-            //textViewAge = (TextView) view.findViewById(R.id.textview_age);
+        public ViewHolder(View itemView) {
+            super(itemView);
+            infoBtn = (ImageView) itemView.findViewById(R.id.projInfoBtn);
+            tvName = (TextView) itemView.findViewById(R.id.projName);
         }
     }
 }

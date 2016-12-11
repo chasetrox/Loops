@@ -89,7 +89,8 @@ public abstract class FirebaseRecyclerAdapter<ViewHolder extends RecyclerView.Vi
             ToneMatrix tm = new ToneMatrix();
 
             if (!mKeys.contains(key)) {
-                HashMap<String,Object> item = (HashMap<String,Object>) dataSnapshot.getValue();
+                HashMap<String,Object> entry = (HashMap<String,Object>) dataSnapshot.getValue();
+                HashMap<String,Object> item = (HashMap<String,Object>) entry.get("rows");
                 int insertedPosition;
                 if (previousChildName == null) {
                     MatrixDataManager.getInstance().populateTMfromHash(item, tm);
@@ -124,7 +125,9 @@ public abstract class FirebaseRecyclerAdapter<ViewHolder extends RecyclerView.Vi
                 int index = mKeys.indexOf(key);
                 T oldItem = mItems.get(index);
 
-                HashMap<String,Object> newItem = (HashMap) dataSnapshot.getValue(FirebaseRecyclerAdapter.this.mItemClass);
+                HashMap<String,Object> entry = (HashMap<String,Object>) dataSnapshot.getValue();
+                HashMap<String,Object> newItem = (HashMap<String,Object>) entry.get("rows");
+
                 MatrixDataManager.getInstance().populateTMfromHash(newItem, tm);
                 mItems.set(index, (T) newItem);
 

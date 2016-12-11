@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,9 +17,12 @@ import android.widget.Toast;
 import android.view.View;
 import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
 import com.example.maxcembalest.loops.grid.LoopGrid;
+import com.example.maxcembalest.loops.grid.ToneMatrix;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 
 public class ProjectsActivity extends AppCompatActivity
@@ -35,13 +39,15 @@ public class ProjectsActivity extends AppCompatActivity
         setContentView(R.layout.activity_projects);
         setupUI();
 
-
+        String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Query q = FirebaseDatabase.getInstance().getReference().child("users/"+user+"/loops/");
 
         projectRecycler = (RecyclerView) findViewById(
                 R.id.projectRecycler);
         projectRecycler.setHasFixedSize(true);
         projectRecycler.setLayoutManager(new GridLayoutManager(this, 2));
-        projectRecyclerAdapter = new ProjectRecyclerAdapter();
+        projectRecyclerAdapter = new ProjectRecyclerAdapter(q, ToneMatrix.class);
+        projectRecycler.setLayoutManager(new LinearLayoutManager(this));
         projectRecycler.setAdapter(projectRecyclerAdapter);
     }
 

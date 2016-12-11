@@ -116,20 +116,25 @@ public class MatrixDataManager {
         String cm = (String) hm.get("checkMap");
         HashMap<String,Double> freqs = (HashMap<String,Double>) hm.get("freqs");
         HashMap<String,String> sk = (HashMap<String,String>) hm.get("soundkeys");
-        for (int i = 0; i < dimBeats; i++) {
-            MatrixRow new_row = new MatrixRow(null,null,null,null,null,null,null,null,0,"KEY_DEFAULT");
-            //extracts row data from overall fb info
-            new_row.setSoundKey(sk.get("row"+i));
-            new_row.setFrequency(Double.parseDouble("" + freqs.get("row"+i)));
-            setRowSquaresFromString(new_row, cm.substring(4*i, (4*i)+4));
+        for (int i = 0; i < dimNotes; i++) {
+            MatrixRow new_row = new MatrixRow();
+            if (i < freqs.size()) {
+                //extracts row data from overall fb info
+                new_row.setSoundKey(sk.get("row" + i));
+                new_row.setFrequency(Double.parseDouble("" + freqs.get("row" + i)));
+                setRowSquaresFromString(new_row, cm.substring(4 * i, (4 * i) + 4));
+            }
             tm.setRowI(i, new_row);
         }
     }
 
     private void setRowSquaresFromString(MatrixRow row, String binString) {
         //Potential for error here, off by one, maybe other
-        for (int i = 0; i < dimBeats; i++) {
-            row.setSqJ(i, new LoopGridSquare(binString.charAt(i) == '1'));
+        int strlen = binString.length();
+        for (int j = 0; j < dimBeats; j++) {
+            if (j < strlen) {
+                row.getSqJ(j).setClicked(binString.charAt(j) == '1');
+            }
         }
     }
 

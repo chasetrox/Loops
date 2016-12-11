@@ -18,6 +18,16 @@ public class MatrixRow {
     private String soundKey;
 
     public MatrixRow() {
+        this.sq0 = new LoopGridSquare(false);
+        this.sq1 = new LoopGridSquare(false);
+        this.sq2 = new LoopGridSquare(false);
+        this.sq3 = new LoopGridSquare(false);
+        this.sq4 = new LoopGridSquare(false);
+        this.sq5 = new LoopGridSquare(false);
+        this.sq6 = new LoopGridSquare(false);
+        this.sq7 = new LoopGridSquare(false);
+        frequency = 0;
+        soundKey = "KEY_DEFAULT";
     }
 
     public MatrixRow(LoopGridSquare sq0, LoopGridSquare sq1, LoopGridSquare sq2, LoopGridSquare sq3, LoopGridSquare sq4, LoopGridSquare sq5, LoopGridSquare sq6, LoopGridSquare sq7, double f, String s) {
