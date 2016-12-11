@@ -32,6 +32,7 @@ public class ProjectsActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
+    private static final String MSG_FRAGMENT = "MSG_FRAGMENT";
     private TextView tvUsername;
     private ProjectRecyclerAdapter projectRecyclerAdapter;
     private RecyclerView projectRecycler;
@@ -136,11 +137,13 @@ public class ProjectsActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_about) {
-            Toast.makeText(this,"Message fragment with info and help",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this,"Message fragment with info and help",Toast.LENGTH_SHORT).show();
+            startFragMsg("About");
         } else if (id == R.id.nav_send_loop) {
             Toast.makeText(this,"Database stuff",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_contact) {
-            Toast.makeText(this,"Message fragment with our emails and github links",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this,"Message fragment with our emails and github links",Toast.LENGTH_SHORT).show();
+            startFragMsg("Contact");
         } else if (id == R.id.nav_editor) {
             startActivity(new Intent(ProjectsActivity.this,LoopActivity.class));
         } else if (id == R.id.nav_logout) {
@@ -160,5 +163,16 @@ public class ProjectsActivity extends BaseActivity
         SugarContext.init(getApplicationContext());
         schemaGenerator.createDatabase(new SugarDb(getApplicationContext()).getDB());
         startActivity(new Intent(ProjectsActivity.this,LoginActivity.class));
+    }
+
+    private void startFragMsg(String s) {
+        FragmentMessage fragmentMessage = new FragmentMessage();
+        fragmentMessage.setCancelable(true);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_MSG,s);
+        fragmentMessage.setArguments(bundle);
+
+        fragmentMessage.show(getSupportFragmentManager(),MSG_FRAGMENT);
     }
 }
