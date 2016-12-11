@@ -22,10 +22,7 @@ public class ProjectRecyclerAdapter extends
 
     private List<Song> songList;
     public ProjectRecyclerAdapter() {
-        songList = new ArrayList<Song>();
-        for (int i = 0; i < 20; i++) {
-            songList.add(new Song("Song"+i));
-        }
+        
 
     }
 

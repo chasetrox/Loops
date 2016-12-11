@@ -101,17 +101,7 @@ public class MatrixDataManager {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 HashMap<String,Object> hm = (HashMap<String, Object>) dataSnapshot.getValue();
                 // Extracts matrix/row data
-                String cm = (String) hm.get("checkMap");
-                HashMap<String,Double> freqs = (HashMap<String,Double>) hm.get("freqs");
-                HashMap<String,String> sk = (HashMap<String,String>) hm.get("soundkeys");
-                for (int i = 0; i < dimBeats; i++) {
-                    MatrixRow new_row = new MatrixRow(null,null,null,null,null,null,null,null,0,"KEY_DEFAULT");
-                    //extracts row data from overall fb info
-                    new_row.setSoundKey(sk.get("row"+i));
-                    new_row.setFrequency(Double.parseDouble("" + freqs.get("row"+i)));
-                    setRowSquaresFromString(new_row, cm.substring(4*i, (4*i)+4));
-                    tm.setRowI(i, new_row);
-                }
+                populateTMfromHash(hm, tm);
             }
 
             @Override
@@ -120,6 +110,20 @@ public class MatrixDataManager {
             }
         });
         return tm;
+    }
+
+    private void populateTMfromHash(HashMap<String, Object> hm, ToneMatrix tm) {
+        String cm = (String) hm.get("checkMap");
+        HashMap<String,Double> freqs = (HashMap<String,Double>) hm.get("freqs");
+        HashMap<String,String> sk = (HashMap<String,String>) hm.get("soundkeys");
+        for (int i = 0; i < dimBeats; i++) {
+            MatrixRow new_row = new MatrixRow(null,null,null,null,null,null,null,null,0,"KEY_DEFAULT");
+            //extracts row data from overall fb info
+            new_row.setSoundKey(sk.get("row"+i));
+            new_row.setFrequency(Double.parseDouble("" + freqs.get("row"+i)));
+            setRowSquaresFromString(new_row, cm.substring(4*i, (4*i)+4));
+            tm.setRowI(i, new_row);
+        }
     }
 
     private void setRowSquaresFromString(MatrixRow row, String binString) {
