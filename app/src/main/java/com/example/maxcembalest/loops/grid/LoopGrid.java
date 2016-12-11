@@ -60,6 +60,11 @@ public class LoopGrid {
    // public void setField
 
 
+    public void populateGrid(ToneMatrix tm) {
+        model = tm;
+    }
+
+
 }
 
 

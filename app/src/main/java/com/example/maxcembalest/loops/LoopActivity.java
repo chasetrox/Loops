@@ -10,7 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.LoopGridView;
+import com.example.maxcembalest.loops.grid.ToneMatrix;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -36,20 +38,31 @@ public class LoopActivity extends AppCompatActivity {
 
     private LoopGridView loopGridView;
 
+    private ToneMatrix tm;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loop);
 
         loopGridView = (LoopGridView) findViewById(R.id.loopGridView);
+
+        MatrixDataManager dataManager = MatrixDataManager.getInstance();
+        tm = dataManager.load("-KYJb3sk8ZFiQs93To1y");
+
+
 
         ButterKnife.bind(this);
     }
 
     @OnClick(R.id.btnSound1)
     void onClick1(){
-        genTone(f.getFreqLowG());
-        playSound();
+        LoopGrid.getInstance().populateGrid(tm);
+        loopGridView.invalidate();
+        //genTone(f.getFreqLowG());
+        //playSound();
     }
     @OnClick(R.id.btnSound2)
     void onClick2(){

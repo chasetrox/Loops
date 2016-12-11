@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
+import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +35,8 @@ public class ProjectsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
         setupUI();
+
+
 
         projectRecycler = (RecyclerView) findViewById(
                 R.id.projectRecycler);
