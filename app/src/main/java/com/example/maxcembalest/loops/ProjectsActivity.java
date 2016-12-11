@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
+
+import com.example.maxcembalest.loops.adapter.ProjectPagerAdapter;
 import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
 import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.ToneMatrix;
@@ -51,6 +54,11 @@ public class ProjectsActivity extends BaseActivity
         setContentView(R.layout.activity_projects);
         setupUI();
         String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new ProjectPagerAdapter(getSupportFragmentManager()));
+
+        /*String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Query q = FirebaseDatabase.getInstance().getReference().child("users/"+user+"/loops/");
 
         setupRecycler(q);
@@ -71,7 +79,7 @@ public class ProjectsActivity extends BaseActivity
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        projectRecycler.setAdapter(projectRecyclerAdapter);
+        projectRecycler.setAdapter(projectRecyclerAdapter);*/
     }
 
     private void setupNavUsername() {
