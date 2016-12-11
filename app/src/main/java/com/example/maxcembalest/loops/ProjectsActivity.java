@@ -6,9 +6,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,24 +14,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View;
+
 import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
-import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.ToneMatrix;
+import com.example.maxcembalest.loops.usermodel.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-
-import java.util.concurrent.TimeUnit;
-
-import com.example.maxcembalest.loops.usermodel.User;
 import com.orm.SchemaGenerator;
 import com.orm.SugarContext;
 import com.orm.SugarDb;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ProjectsActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +36,8 @@ public class ProjectsActivity extends BaseActivity
     private ProjectRecyclerAdapter projectRecyclerAdapter;
     private RecyclerView projectRecycler;
     int time = 500;
+
+    public static final String KEY_MSG = "KEY_MSG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
