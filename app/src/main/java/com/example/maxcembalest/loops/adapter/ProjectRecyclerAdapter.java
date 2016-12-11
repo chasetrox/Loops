@@ -1,5 +1,7 @@
 package com.example.maxcembalest.loops.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -7,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.maxcembalest.loops.LoopActivity;
 import com.example.maxcembalest.loops.R;
 import com.example.maxcembalest.loops.data.Song;
+import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.ToneMatrix;
 import com.google.firebase.database.Query;
 
@@ -25,6 +30,7 @@ import java.util.List;
 public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyclerAdapter.ViewHolder, ToneMatrix> {
 
 
+
     public ProjectRecyclerAdapter(Query query, Class<ToneMatrix> itemClass) {
         super(query, itemClass);
     }
@@ -35,17 +41,26 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("onbind", "In onbind");
         View loopCell = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.project_icon,parent,false);
         return new ViewHolder(loopCell);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ToneMatrix item = getItem(position);
-        Log.d("onbind", "In onbind");
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final ToneMatrix item = getItem(position);
         holder.tvName.setText("Loop name");
+        holder.cell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = holder.cell.getContext();
+                int pos = getPositionForItem(item);
+                Intent toLoopActivity = new Intent(context, LoopActivity.class);
+                toLoopActivity.putExtra("key", getKeys().get(pos));
+                LoopGrid.getInstance().populateGrid(item);
+                context.startActivity(toLoopActivity);
+            }
+        });
     }
 
     @Override
@@ -72,12 +87,16 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView infoBtn;
+        private ImageView playBtn;
         private TextView tvName;
+        private boolean isPlaying;
+        private RelativeLayout cell;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            infoBtn = (ImageView) itemView.findViewById(R.id.projInfoBtn);
+            isPlaying = false;
+            cell = (RelativeLayout) itemView.findViewById(R.id.cellView);
+            playBtn = (ImageView) itemView.findViewById(R.id.playButton);
             tvName = (TextView) itemView.findViewById(R.id.projName);
         }
     }

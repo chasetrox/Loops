@@ -1,6 +1,9 @@
 package com.example.maxcembalest.loops;
 
+import android.content.Intent;
+import android.graphics.Matrix;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -13,6 +16,8 @@ import butterknife.OnClick;
 public class LoopActivity extends BaseActivity implements FragmentChangeDim.OptionsFragmentInterface{
     public static final String KEY_TYPE = "KEY_TYPE";
     private static final String DIM_FRAGMENT = "DIM_FRAGMENT";
+    private boolean editMode = false;
+    private String key;
 
     private final Frequencies f = new Frequencies();
     private LoopGridView loopGridView;
@@ -34,6 +39,13 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            key = b.getString("key");
+            editMode = true;
+        }
+
         setContentView(R.layout.activity_loop);
         setupViews();
         ButterKnife.bind(this);
@@ -78,6 +90,17 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
         }
     }
 
+    public void play() {
+        playing = true;
+        playThread = new PlayThread();
+        playThread.start();
+    }
+    public void stop() {
+        playing = false;
+        playThread.setPlayEnabled(false);
+        currentBeat = 0;
+    }
+
     @OnClick(R.id.btnStop)
     void onClickStop() {
         playing = false;
@@ -93,7 +116,11 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
 
     @OnClick(R.id.btnSave)
     void onClickSave() {
-        MatrixDataManager.getInstance().save();
+        if (editMode) {
+            MatrixDataManager.getInstance().edit(key);
+        } else {
+            MatrixDataManager.getInstance().save();
+        }
         Toast.makeText(this, "Saved :)", Toast.LENGTH_SHORT).show();
     }
 

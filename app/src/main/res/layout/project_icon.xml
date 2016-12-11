@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="185dp"
-    android:layout_height="150dp"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="120dp"
     android:background="@drawable/project_icon_bg"
     android:padding="5dp"
-    android:layout_marginBottom="2dp"
+    android:layout_margin="2dp"
     android:layout_centerHorizontal="true"
+    android:id="@+id/cellView"
     >
 
     <ImageView
@@ -13,16 +14,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_info_outline"
-        android:id="@+id/projInfoBtn"
+        android:src="@drawable/ic_action_playback_play"
+        android:id="@+id/playButton"
         />
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_centerInParent="true"
         android:id="@+id/projIcon"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/loops_logo_no_word"/>
 
     <TextView
         android:layout_width="wrap_content"

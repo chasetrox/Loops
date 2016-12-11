@@ -58,6 +58,15 @@ public class MatrixDataManager {
         return true; // TODO try catch or exceptions? in case of DB failure
     }
 
+    public boolean edit(String key) {
+        HashMap<String, Object> editedLoop = new HashMap<>();
+        String path = "users/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/loops";
+        editedLoop.put("key", key);
+        editedLoop.put("rows", extractMatrixRows());
+        FirebaseDatabase.getInstance().getReference().child(path).child(key).setValue(editedLoop);
+        return true;
+    }
+
     private HashMap<String,Object> extractMatrixRows() {
         HashMap<String,Object> rows = new HashMap<>();
         String map = "";
@@ -122,7 +131,7 @@ public class MatrixDataManager {
                 //extracts row data from overall fb info
                 new_row.setSoundKey(sk.get("row" + i));
                 new_row.setFrequency(Double.parseDouble("" + freqs.get("row" + i)));
-                setRowSquaresFromString(new_row, cm.substring(4 * i, (4 * i) + 4));
+                setRowSquaresFromString(new_row, cm.substring(dimNotes * i, (dimNotes * i) + dimBeats));
             }
             tm.setRowI(i, new_row);
         }

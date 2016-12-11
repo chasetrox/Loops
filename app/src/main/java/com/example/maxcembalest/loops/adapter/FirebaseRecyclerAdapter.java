@@ -125,6 +125,7 @@ public abstract class FirebaseRecyclerAdapter<ViewHolder extends RecyclerView.Vi
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             String key = dataSnapshot.getKey();
             ToneMatrix tm = new ToneMatrix();
+            Log.d("OnChange", "in on child changed");
 
             if (mKeys.contains(key)) {
                 int index = mKeys.indexOf(key);
