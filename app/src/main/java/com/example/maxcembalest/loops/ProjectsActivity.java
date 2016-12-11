@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
@@ -21,10 +23,8 @@ import com.orm.SugarContext;
 import com.orm.SugarDb;
 
 import java.util.List;
-import com.example.maxcembalest.loops.grid.LoopGrid;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
+
+
 
 
 public class ProjectsActivity extends AppCompatActivity
@@ -32,6 +32,13 @@ public class ProjectsActivity extends AppCompatActivity
 
     private ProjectRecyclerAdapter projectRecyclerAdapter;
     private RecyclerView projectRecycler;
+
+    private TextView tvUsername;
+
+    public static final String KEY_MSG = "KEY_MSG";
+    public final String ABOUT = getString(R.string.about);
+    private final String Message_Fragment = getString(R.string.messageFragment);
+    public final String CONTACT = getString(R.string.contact);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +73,16 @@ public class ProjectsActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         return toolbar;
+    }
+
+    private void setupNavUsername() {
+        List<User> users = User.listAll(User.class);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View header=navigationView.getHeaderView(0);
+        tvUsername = (TextView) header.findViewById(R.id.tvUsername);
+        tvUsername.setText(users.get(0).getUsername());
     }
 
     private void setupNavView() {
@@ -115,17 +132,39 @@ public class ProjectsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_about) {
-            Toast.makeText(this,"Message fragment with info and help",Toast.LENGTH_SHORT).show();
+            showMessage(ABOUT);
         } else if (id == R.id.nav_send_loop) {
             Toast.makeText(this,"Database stuff",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_contact) {
-            Toast.makeText(this,"Message fragment with our emails and github links",Toast.LENGTH_SHORT).show();
+            showMessage(CONTACT);
         } else if (id == R.id.nav_editor) {
             startActivity(new Intent(ProjectsActivity.this,LoopActivity.class));
+        } else if (id == R.id.nav_logout) {
+            //Toast.makeText(this,"Logout",Toast.LENGTH_SHORT).show();
+            logout();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showMessage(String s) {
+        FragmentMessage fragmentMessage = new FragmentMessage();
+        fragmentMessage.setCancelable(true);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_MSG,s);
+        fragmentMessage.setArguments(bundle);
+
+        fragmentMessage.show(getSupportFragmentManager(),Message_Fragment);
+    }
+
+    private void logout() {
+        SugarContext.terminate();
+        SchemaGenerator schemaGenerator = new SchemaGenerator(getApplicationContext());
+        schemaGenerator.deleteTables(new SugarDb(getApplicationContext()).getDB());
+        SugarContext.init(getApplicationContext());
+        schemaGenerator.createDatabase(new SugarDb(getApplicationContext()).getDB());
+        startActivity(new Intent(ProjectsActivity.this,LoginActivity.class));
     }
 }
