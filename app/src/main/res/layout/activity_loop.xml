@@ -80,8 +80,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            android:src="@drawable/play"
-            />
+            android:src="@mipmap/ic_launcher"/>
+            <!-- replaced play with ic_launcher, find play shape -->
+
 
     </LinearLayout>
 
