@@ -79,7 +79,11 @@ public abstract class FirebaseRecyclerAdapter<ViewHolder extends RecyclerView.Vi
             mKeys = new ArrayList<String>();
         }
         this.mItemClass = itemClass;
-        query.addChildEventListener(mListener);
+        //mItems.add((T) (new ToneMatrix()));
+    }
+
+    public void applyListener() {
+        mQuery.addChildEventListener(mListener);
     }
 
     private ChildEventListener mListener = new ChildEventListener() {
@@ -111,6 +115,7 @@ public abstract class FirebaseRecyclerAdapter<ViewHolder extends RecyclerView.Vi
                     }
                     insertedPosition = nextIndex;
                 }
+                Log.d("inONADD", "inserted at "+insertedPosition);
                 notifyItemInserted(insertedPosition);
                 itemAdded((T) tm, key, insertedPosition);
             }
@@ -129,10 +134,10 @@ public abstract class FirebaseRecyclerAdapter<ViewHolder extends RecyclerView.Vi
                 HashMap<String,Object> newItem = (HashMap<String,Object>) entry.get("rows");
 
                 MatrixDataManager.getInstance().populateTMfromHash(newItem, tm);
-                mItems.set(index, (T) newItem);
+                mItems.set(index, (T) tm);
 
                 notifyItemChanged(index);
-                itemChanged(oldItem, (T) newItem, key, index);
+                itemChanged(oldItem, (T) tm, key, index);
             }
         }
 

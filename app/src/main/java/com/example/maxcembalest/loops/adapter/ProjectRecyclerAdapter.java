@@ -50,12 +50,14 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
 
     @Override
     protected void itemAdded(ToneMatrix item, String key, int position) {
+        notifyDataSetChanged();
         Log.d("MyAdapter", "Added a new item to the adapter.");
     }
 
     @Override
     protected void itemChanged(ToneMatrix oldItem, ToneMatrix newItem, String key, int position) {
-
+        notifyDataSetChanged();
+        Log.d("MyAdapter", "Changed a new item to the adapter.");
     }
 
     @Override

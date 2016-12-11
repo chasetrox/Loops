@@ -24,12 +24,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.util.concurrent.TimeUnit;
 
-public class ProjectsActivity extends AppCompatActivity
+
+public class ProjectsActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ProjectRecyclerAdapter projectRecyclerAdapter;
     private RecyclerView projectRecycler;
+    int time = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +50,13 @@ public class ProjectsActivity extends AppCompatActivity
         projectRecycler.setHasFixedSize(true);
         projectRecycler.setLayoutManager(new GridLayoutManager(this, 2));
         projectRecyclerAdapter = new ProjectRecyclerAdapter(q, ToneMatrix.class);
-        projectRecycler.setLayoutManager(new LinearLayoutManager(this));
+        projectRecyclerAdapter.applyListener();
+
+        try { //Janky way to ensure data loads.
+            TimeUnit.MILLISECONDS.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         projectRecycler.setAdapter(projectRecyclerAdapter);
     }
 
