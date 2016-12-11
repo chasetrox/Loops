@@ -43,8 +43,8 @@ public class LoopGrid {
         }
     }
 
-    public void populateGrid(ToneMatrix tm){
-
+    public void populateGrid(ToneMatrix tm) {
+        model = tm;
     }
 
     public LoopGridSquare getFieldContent(int x, int y){

@@ -50,9 +50,6 @@ public class LoginActivity extends BaseActivity {
 
         ButterKnife.bind(this);
 
-
-
-
     }
 
     @OnClick(R.id.btnRegister)

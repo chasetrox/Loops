@@ -19,4 +19,22 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="about">Welcome to Loops!
+Interact with a tone matrix to edit, save, and share loops generated live on your phone.
+
+To get started, go to the Loop Editor and tap the grid, then hit play!
+To change the dimension of the grid and the duration of tones, use the buttons to the side.
+</string>
+    <string name="contact">Loops © 2016
+Loops © 2016
+AIT Budapest – Android Mobile Software Development
+Max Cembalest : mcembalest@wesleyan.edu
+Chase Troxell : chasetrox@gmail.com
+
+https://github.com/chasetrox/Loops
+
+Thank you to http://tonematrix.audiotool.com/ for the inspiration
+
+</string>
+    <string name="messageFragment">Message_Fragment</string>
 </resources>

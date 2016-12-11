@@ -1,6 +1,7 @@
 package com.example.maxcembalest.loops.grid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -71,6 +72,8 @@ public class LoopGridView extends View{
 
     private void drawRectAt(Canvas canvas, int i, int j) {
         LoopGridSquare sqcontent = LoopGrid.getInstance().getFieldContent(i,j);
+        LoopGrid lg = LoopGrid.getInstance();
+        Log.d("IN DRAWR", ""+ Integer.toString(i)+" "+Integer.toString(j));
         if (sqcontent.isClicked()){
             canvas.drawRect(i * getHeight() / dimBeats, (j)*getHeight()/dimNotes,(i+1) * getHeight() / dimBeats, (j+1)*getHeight()/dimNotes, paintBgSquare);
         }
