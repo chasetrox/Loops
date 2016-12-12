@@ -39,20 +39,11 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         firebaseAuth = FirebaseAuth.getInstance();
-        users = User.listAll(User.class);
-        if (users.size()>0){
-            showProgressDialog();
-            signIn(users.get(0).getEmail(),users.get(0).getPassword());
-        }
 
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
 
         ButterKnife.bind(this);
-
-
-
-
     }
 
     @OnClick(R.id.btnRegister)
@@ -75,8 +66,7 @@ public class LoginActivity extends BaseActivity {
                                     setDisplayName(usernameFromEmail(fbUser.getEmail())).build());
 
                             User user = new User(fbUser.getEmail(), usernameFromEmail(fbUser.getEmail()),etPassword.getText().toString());
-                            databaseReference.child("users").child(fbUser.getUid()).setValue(user);
-                            databaseReference.child("share").push().setValue(fbUser.getEmail(),null);
+                            databaseReference.child("shared").push().setValue(fbUser.getEmail().split("@")[0]);
 
                             Toast.makeText(LoginActivity.this, "User created", Toast.LENGTH_SHORT).show();
                         } else {

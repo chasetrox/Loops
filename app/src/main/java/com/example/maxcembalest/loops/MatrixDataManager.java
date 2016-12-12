@@ -27,20 +27,22 @@ import static com.example.maxcembalest.loops.LoopActivity.dimNotes;
 
 
 /**
- * Created by maxcembalest on 11/28/16.
+ * Created by maxcembalest on 11/2maxDim/16.
  */
 
 public class MatrixDataManager {
     private static MatrixDataManager instance = null;
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
+    private static int maxDim = 8;
 
-    public MatrixDataManager MatrixDataManager() { // Database references are aggressively not working.
+    public MatrixDataManager MatrixDataManager() {
         this.databaseReference = FirebaseDatabase.getInstance().getReference();
         this.firebaseAuth = FirebaseAuth.getInstance();
         return this;
     }
 
+    //Set up singleton class
     public static MatrixDataManager getInstance() {
         if (instance == null) {
             instance = new MatrixDataManager();
@@ -48,6 +50,7 @@ public class MatrixDataManager {
         return instance;
     }
 
+    // Extracts data from LoopGrid and stores in Firebase
     public boolean save() {
         HashMap<String, Object> newLoop = new HashMap<>();
         String path = "users/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/loops";
@@ -55,9 +58,10 @@ public class MatrixDataManager {
         newLoop.put("key", key);
         newLoop.put("rows", extractMatrixRows());
         FirebaseDatabase.getInstance().getReference().child(path).child(key).setValue(newLoop);
-        return true; // TODO try catch or exceptions? in case of DB failure
+        return true;
     }
 
+    // Allows editing of current loop
     public boolean edit(String key) {
         HashMap<String, Object> editedLoop = new HashMap<>();
         String path = "users/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/loops";
@@ -67,12 +71,13 @@ public class MatrixDataManager {
         return true;
     }
 
+    // Performs LoopGrid extraction
     private HashMap<String,Object> extractMatrixRows() {
         HashMap<String,Object> rows = new HashMap<>();
         String map = "";
         HashMap<String, Double> freqs = new HashMap<>();
         HashMap<String, String> soundkeys = new HashMap<>();
-        for (int i = 0; i < dimNotes; i++) {
+        for (int i = 0; i < maxDim; i++) {
             MatrixRow currRow = LoopGrid.getInstance().getRow(i);
             map += convertRowToBinString(currRow);
             freqs.put("row"+i, currRow.getFrequency());
@@ -89,7 +94,7 @@ public class MatrixDataManager {
     private String convertRowToBinString(MatrixRow row) {
         String binString = "";
 
-        for (int i = 0; i < dimBeats; i++) {
+        for (int i = 0; i < maxDim; i++) {
             boolean c = row.getSqJ(i).isClicked();
             binString += (c ? "1": "0");
         }
@@ -97,6 +102,7 @@ public class MatrixDataManager {
         return binString;
     }
 
+    // gets hash from database and loads into tone matrix
     public ToneMatrix load(String key) {
         String path = "users/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/loops/"+key;
         return populateToneMatrix(path);
@@ -127,79 +133,54 @@ public class MatrixDataManager {
         tm.setName((String) hm.get("name"));
         HashMap<String,Double> freqs = (HashMap<String,Double>) hm.get("freqs");
         HashMap<String,String> sk = (HashMap<String,String>) hm.get("soundkeys");
-        for (int i = 0; i < dimNotes; i++) {
+        for (int i = 0; i < maxDim; i++) {
             MatrixRow new_row = new MatrixRow();
             if (i < freqs.size()) {
                 //extracts row data from overall fb info
                 new_row.setSoundKey(sk.get("row" + i));
                 new_row.setFrequency(Double.parseDouble("" + freqs.get("row" + i)));
-                setRowSquaresFromString(new_row, cm.substring(dimNotes * i, (dimNotes * i) + dimBeats));
+                setRowSquaresFromString(new_row, cm.substring(maxDim * i, (maxDim * i) + maxDim));
             }
             tm.setRowI(i, new_row);
         }
     }
 
+    public HashMap<String,Object> generateHashfromTM(ToneMatrix tm, String key) {
+        HashMap<String, Object> hash = new HashMap<>();
+        hash.put("key", key);
+        hash.put("rows", generateRowHash(tm));
+        return hash;
+    }
+
+    private Object generateRowHash(ToneMatrix tm) {
+        HashMap<String,Object> rows = new HashMap<>();
+        String map = "";
+        HashMap<String, Double> freqs = new HashMap<>();
+        HashMap<String, String> soundkeys = new HashMap<>();
+        for (int i = 0; i < maxDim; i++) {
+            MatrixRow currRow = tm.getRowI(i);
+            map += convertRowToBinString(currRow);
+            freqs.put("row"+i, currRow.getFrequency());
+            soundkeys.put("row"+i, currRow.getSoundKey());
+        }
+        rows.put("name", tm.getName());
+        rows.put("checkMap", map);
+        rows.put("freqs", freqs);
+        rows.put("soundkeys", soundkeys);
+
+        return rows;
+    }
+
+
     private void setRowSquaresFromString(MatrixRow row, String binString) {
         //Potential for error here, off by one, maybe other
         int strlen = binString.length();
-        for (int j = 0; j < dimBeats; j++) {
+        for (int j = 0; j < maxDim; j++) {
             if (j < strlen) {
                 row.getSqJ(j).setClicked(binString.charAt(j) == '1');
             }
         }
     }
-
-    ///---------------------------------------------------------------------------------------\\\
-    /// Old code graveyard
-    ///---------------------------------------------------------------------------------------\\\
-
-    /*private MatrixRow convertDbToRow(String path, final int note) {
-        final MatrixRow new_row = new MatrixRow(null,null,null,null,null,null,null,null,0,"KEY_DEFAULT");
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(path).child("rows").child("row"+Integer.toString(note));
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String,Object> hm = (HashMap<String, Object>) dataSnapshot.getValue();
-
-                new_row.setSoundKey((String) hm.get("soundKey"));
-                Double freq = Double.parseDouble(""+hm.get("frequency"));//
-                new_row.setFrequency(freq);
-                setRowSquaresFromString(new_row, (String) hm.get("rowSettings"));
-                Log.d("HEY ALL", "I'm in on Data Change!!!");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("ERROR", "ERROR IN ON LOAD FROM DB");
-            }
-        });
-        return new_row;
-    }*/
-
-    /* public boolean save() {
-        String path = "users/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/loops";
-        String key = FirebaseDatabase.getInstance().getReference().child(path).push().getKey();
-        HashMap<String, Object> newLoopMap = new HashMap<>();
-        newLoopMap.put(key, extractMatrixRows());
-        FirebaseDatabase.getInstance().getReference().child(path).child(key).setValue(newLoop);
-    }*/
-
-    /*private HashMap<String,Object> extractMatrixRows() {
-        HashMap<String,Object> rows = new HashMap<>();
-        for (int i = 0; i < dimNotes; i++) {
-            HashMap<String,Object> row = new HashMap<>();
-
-
-            MatrixRow currRow = LoopGrid.getInstance().getRow(i);
-            row.put("soundKey", currRow.getSoundKey());
-            row.put("frequency", currRow.getFrequency());
-            row.put("rowClicks", convertRowToBinString(currRow));
-
-            rows.put("row"+Integer.toString(i), row);
-        }
-        return rows;
-    }*/
 
 }
 

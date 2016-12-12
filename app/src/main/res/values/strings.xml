@@ -22,4 +22,7 @@
     <string name="x">X</string>
     <string name="enterloopname">enter loop name</string>
     <string name="loopname">Loop name</string>
+    <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
+    <string name="enter_friend_s_username_here">Enter Friend\'s Username Here</string>
 </resources>

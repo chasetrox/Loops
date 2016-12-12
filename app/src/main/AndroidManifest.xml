@@ -61,6 +61,11 @@
             android:label="Loop Creator"
             android:theme="@style/Theme.AppCompat.Dialog" />
 
+        <activity
+            android:name=".ShareActivity"
+            android:label="Share Loop"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+
     </application>
 
 </manifest>

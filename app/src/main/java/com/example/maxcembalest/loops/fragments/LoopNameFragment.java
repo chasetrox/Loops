@@ -19,7 +19,7 @@ import com.example.maxcembalest.loops.R;
  * Created by peter on 2016. 11. 28..
  */
 
-public class MessageFragment extends DialogFragment implements DialogInterface.OnClickListener {
+public class LoopNameFragment extends DialogFragment implements DialogInterface.OnClickListener {
 
     EditText editName;
     @Override

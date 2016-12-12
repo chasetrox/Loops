@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.example.maxcembalest.loops.adapter.ProjectPagerAdapter;
 import com.example.maxcembalest.loops.adapter.ProjectRecyclerAdapter;
+import com.example.maxcembalest.loops.fragments.FragmentMessage;
 import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.ToneMatrix;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +42,8 @@ import java.util.List;
 public class ProjectsActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String KEY_MSG = "KEY_MSG";
+    private static final String MSG_FRAGMENT = "MSG_FRAGMENT";
 
     private TextView tvUsername;
     private ProjectRecyclerAdapter projectRecyclerAdapter;
@@ -49,37 +52,14 @@ public class ProjectsActivity extends BaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
         setupUI();
-        String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new ProjectPagerAdapter(getSupportFragmentManager()));
-
-        /*String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Query q = FirebaseDatabase.getInstance().getReference().child("users/"+user+"/loops/");
-
-        setupRecycler(q);
-        setupNavUsername();
     }
 
-    private void setupRecycler(Query q) {
-
-        projectRecycler = (RecyclerView) findViewById(
-                R.id.projectRecycler);
-        projectRecycler.setHasFixedSize(true);
-        projectRecycler.setLayoutManager(new GridLayoutManager(this, 2));
-        projectRecyclerAdapter = new ProjectRecyclerAdapter(q, ToneMatrix.class);
-        projectRecyclerAdapter.applyListener();
-
-        try { //Janky way to ensure data loads.
-            TimeUnit.MILLISECONDS.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        projectRecycler.setAdapter(projectRecyclerAdapter);*/
+    private void initPager() {
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new ProjectPagerAdapter(getSupportFragmentManager()));
     }
 
     private void setupNavUsername() {
@@ -94,10 +74,9 @@ public class ProjectsActivity extends BaseActivity
 
     private void setupUI() {
         Toolbar toolbar = setupToolbar();
-
         setupDrawer(toolbar);
-
         setupNavView();
+        initPager();
     }
 
     private Toolbar setupToolbar() {
@@ -149,11 +128,22 @@ public class ProjectsActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_about) {
-            Toast.makeText(this,"Message fragment with info and help",Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_send_loop) {
-            Toast.makeText(this,"Database stuff",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this,"Message fragment with info and help",Toast.LENGTH_SHORT).show();
+            startFragMsg("Welcome to Loops!  \n" +
+                    "Interact with a tone matrix to edit, save, and share loops generated live on your phone.\n" +
+                    "\n" +
+                    "To get started, go to the Loop Editor and tap the grid, then hit play!  \n" +
+                    "To change the dimension of the grid and the duration of tones, use the buttons to the side.\n");
         } else if (id == R.id.nav_contact) {
-            Toast.makeText(this,"Message fragment with our emails and github links",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this,"Message fragment with our emails and github links",Toast.LENGTH_SHORT).show();
+            startFragMsg("Loops © 2016\n" +
+                    "AIT Budapest – Android Mobile Woftware Development\n" +
+                    "Max Cembalest : mcembalest@wesleyan.edu\n" +
+                    "Chase Troxell : chasetrox@gmail.com\n" +
+                    "\n" +
+                    "https://github.com/chasetrox/Loops\n" +
+                    "\n" +
+                    "Thank you to http://tonematrix.audiotool.com/ for the inspiration\n");
         } else if (id == R.id.nav_editor) {
             startActivity(new Intent(ProjectsActivity.this,LoopActivity.class));
         } else if (id == R.id.nav_logout) {
@@ -173,5 +163,16 @@ public class ProjectsActivity extends BaseActivity
         SugarContext.init(getApplicationContext());
         schemaGenerator.createDatabase(new SugarDb(getApplicationContext()).getDB());
         startActivity(new Intent(ProjectsActivity.this,LoginActivity.class));
+    }
+
+    private void startFragMsg(String s) {
+        FragmentMessage fragmentMessage = new FragmentMessage();
+        fragmentMessage.setCancelable(true);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_MSG,s);
+        fragmentMessage.setArguments(bundle);
+
+        fragmentMessage.show(getSupportFragmentManager(),MSG_FRAGMENT);
     }
 }

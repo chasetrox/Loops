@@ -14,18 +14,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.maxcembalest.loops.LoopActivity;
+import com.example.maxcembalest.loops.MatrixDataManager;
 import com.example.maxcembalest.loops.R;
-import com.example.maxcembalest.loops.data.Song;
+import com.example.maxcembalest.loops.ShareActivity;
 import com.example.maxcembalest.loops.grid.LoopGrid;
+import com.example.maxcembalest.loops.grid.MatrixRow;
 import com.example.maxcembalest.loops.grid.ToneMatrix;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Chase on 11/21/16.
@@ -79,6 +78,18 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
                 });
             }
         });
+
+        holder.shareBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = holder.cell.getContext();
+                int pos = holder.getAdapterPosition();
+                String key = getKeys().get(pos);
+                Intent toShareActivity = new Intent(context, ShareActivity.class);
+                toShareActivity.putExtra("key", key);
+                context.startActivity(toShareActivity);
+            }
+        });
     }
 
     @Override
@@ -106,7 +117,7 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView playBtn;
+        private ImageView shareBtn;
         private TextView tvName;
         private boolean isPlaying;
         private RelativeLayout cell;
@@ -117,7 +128,7 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
             isPlaying = false;
             delete = (TextView) itemView.findViewById(R.id.deleteText);
             cell = (RelativeLayout) itemView.findViewById(R.id.cellView);
-            playBtn = (ImageView) itemView.findViewById(R.id.playButton);
+            shareBtn = (ImageView) itemView.findViewById(R.id.playButton);
             tvName = (TextView) itemView.findViewById(R.id.projName);
         }
     }

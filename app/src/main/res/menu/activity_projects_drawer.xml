@@ -11,10 +11,6 @@
             android:icon="@drawable/ic_action_help"
             android:title="About" />
         <item
-            android:id="@+id/nav_send_loop"
-            android:icon="@drawable/ic_menu_send"
-            android:title="Share a loop" />
-        <item
             android:id="@+id/nav_contact"
             android:icon="@drawable/ic_perm_identity"
             android:title="Contact us" />

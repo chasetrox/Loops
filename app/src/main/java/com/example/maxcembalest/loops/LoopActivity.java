@@ -1,22 +1,21 @@
 package com.example.maxcembalest.loops;
 
-import android.content.Intent;
-import android.graphics.Matrix;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.maxcembalest.loops.fragments.MessageFragment;
+import com.example.maxcembalest.loops.fragments.LoopNameFragment;
 import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.LoopGridView;
+import com.example.maxcembalest.loops.grid.ToneMatrix;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoopActivity extends BaseActivity implements FragmentChangeDim.OptionsFragmentInterface{
     public static final String KEY_TYPE = "KEY_TYPE";
+
     private static final String DIM_FRAGMENT = "DIM_FRAGMENT";
     private boolean editMode = false;
     private String key;
@@ -45,11 +44,7 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
         super.onCreate(savedInstanceState);
         name = "";
 
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-            key = b.getString("key");
-            editMode = true;
-        }
+        setupEditMode();
 
         setContentView(R.layout.activity_loop);
         setupViews();
@@ -58,10 +53,12 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
         introThread.start();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        loopGridView.clearGrid();
+    private void setupEditMode() {
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            key = b.getString("key");
+            editMode = true;
+        }
     }
 
     private void setupViews() {
@@ -107,9 +104,11 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
         playThread.start();
     }
     public void stop() {
-        playing = false;
-        playThread.setPlayEnabled(false);
-        currentBeat = 0;
+        if (playing) {
+            playing = false;
+            playThread.setPlayEnabled(false);
+            currentBeat = 0;
+        }
     }
 
     @OnClick(R.id.btnStop)
@@ -127,7 +126,7 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
 
     @OnClick(R.id.btnSave)
     void onClickSave() {
-        MessageFragment setName = new MessageFragment();
+        LoopNameFragment setName = new LoopNameFragment();
         setName.show(getSupportFragmentManager(), "LOOP_CREATOR");
 
         // Moved final save call (ie to MatrixDataManager) into OnCallback from Naming method
@@ -286,6 +285,8 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
             MatrixDataManager.getInstance().save();
         }
         Toast.makeText(this, "Saved :)", Toast.LENGTH_SHORT).show();
+        finish();
     }
+
 
 }

@@ -71,5 +71,9 @@ public class MyLoopsFragment extends Fragment {
         return rootView;
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        projectRecyclerAdapter.destroy();
+    }
 }

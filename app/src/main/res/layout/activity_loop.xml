@@ -78,11 +78,9 @@
         <ImageView
             android:id="@+id/ivPlay"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:visibility="invisible"
-            android:src="@mipmap/ic_launcher"/>
-            <!-- replaced play with ic_launcher, find play shape -->
-
+            android:src="@drawable/play"/>
 
     </LinearLayout>
 

@@ -32,17 +32,14 @@ public class SharedLoopsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Query q = FirebaseDatabase.getInstance().getReference().child("users/"+user+"/loops/");
+        String username = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        Query q = FirebaseDatabase.getInstance().getReference().child("shared/"+username.split("@")[0]);
 
         View rootView = inflater.inflate(R.layout.my_loops_fragment, container, false);
         rootView.setTag(TAG);
@@ -71,4 +68,9 @@ public class SharedLoopsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        projectRecyclerAdapter.destroy();
+    }
 }
