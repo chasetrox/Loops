@@ -36,6 +36,8 @@ public class MyLoopsFragment extends Fragment {
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
     }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

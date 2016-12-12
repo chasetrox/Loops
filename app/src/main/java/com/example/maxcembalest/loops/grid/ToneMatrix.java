@@ -14,12 +14,20 @@ public class ToneMatrix {
     private MatrixRow row5;
     private MatrixRow row6;
     private MatrixRow row7;
+    String name = "";
 
     public ToneMatrix(){
 
     }
 
-    public ToneMatrix(MatrixRow r0, MatrixRow r1, MatrixRow r2, MatrixRow r3, MatrixRow r4, MatrixRow r5, MatrixRow r6, MatrixRow r7){
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public ToneMatrix(String name, MatrixRow r0, MatrixRow r1, MatrixRow r2, MatrixRow r3, MatrixRow r4, MatrixRow r5, MatrixRow r6, MatrixRow r7){
         row0=r0;
         row1=r1;
         row2=r2;
@@ -28,6 +36,7 @@ public class ToneMatrix {
         row5=r5;
         row6=r6;
         row7=r7;
+        this.name = name;
     }
 
     public MatrixRow getRow0() {

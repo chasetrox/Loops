@@ -76,7 +76,7 @@ public class LoginActivity extends BaseActivity {
 
                             User user = new User(fbUser.getEmail(), usernameFromEmail(fbUser.getEmail()),etPassword.getText().toString());
                             databaseReference.child("users").child(fbUser.getUid()).setValue(user);
-
+                            databaseReference.child("share").push().setValue(fbUser.getEmail(),null);
 
                             Toast.makeText(LoginActivity.this, "User created", Toast.LENGTH_SHORT).show();
                         } else {

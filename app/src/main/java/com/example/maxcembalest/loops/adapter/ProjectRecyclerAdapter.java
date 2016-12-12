@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.maxcembalest.loops.LoopActivity;
 import com.example.maxcembalest.loops.R;
@@ -33,7 +34,6 @@ import java.util.List;
 public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyclerAdapter.ViewHolder, ToneMatrix> {
     Query q;
 
-
     public ProjectRecyclerAdapter(Query query, Class<ToneMatrix> itemClass) {
         super(query, itemClass);
         q = query;
@@ -53,12 +53,12 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final ToneMatrix item = getItem(position);
-        holder.tvName.setText("Loop name");
+        holder.tvName.setText(item.getName());
         holder.cell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context context = holder.cell.getContext();
-                int pos = getPositionForItem(item);
+                int pos = holder.getAdapterPosition();
                 Intent toLoopActivity = new Intent(context, LoopActivity.class);
                 toLoopActivity.putExtra("key", getKeys().get(pos));
                 LoopGrid.getInstance().populateGrid(item);
@@ -69,12 +69,12 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int pos = getPositionForItem(item);
+                int pos = holder.getAdapterPosition();
                 final String key = getKeys().get(pos);
                 q.getRef().child(key).removeValue(new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        itemRemoved(item, key, holder.getAdapterPosition());
+                        Toast.makeText(holder.cell.getContext(), "Deleted Loop", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -95,7 +95,7 @@ public class ProjectRecyclerAdapter extends FirebaseRecyclerAdapter<ProjectRecyc
 
     @Override
     protected void itemRemoved(ToneMatrix item, String key, int position) {
-        notifyItemRemoved(position);
+        //notifyItemRemoved(position);
         Log.d("MyAdapter", "Deleted a loop @"+position);
     }
 

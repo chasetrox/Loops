@@ -78,6 +78,7 @@ public class MatrixDataManager {
             freqs.put("row"+i, currRow.getFrequency());
             soundkeys.put("row"+i, currRow.getSoundKey());
         }
+        rows.put("name", LoopGrid.getInstance().getName());
         rows.put("checkMap", map);
         rows.put("freqs", freqs);
         rows.put("soundkeys", soundkeys);
@@ -102,7 +103,7 @@ public class MatrixDataManager {
     }
 
     private ToneMatrix populateToneMatrix(String path) {
-        final ToneMatrix tm = new ToneMatrix(null,null,null,null,null,null,null,null);
+        final ToneMatrix tm = new ToneMatrix("Loop",null,null,null,null,null,null,null,null);
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(path).child("rows");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -123,6 +124,7 @@ public class MatrixDataManager {
 
     public void populateTMfromHash(HashMap<String, Object> hm, ToneMatrix tm) {
         String cm = (String) hm.get("checkMap");
+        tm.setName((String) hm.get("name"));
         HashMap<String,Double> freqs = (HashMap<String,Double>) hm.get("freqs");
         HashMap<String,String> sk = (HashMap<String,String>) hm.get("soundkeys");
         for (int i = 0; i < dimNotes; i++) {

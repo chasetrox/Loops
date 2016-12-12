@@ -20,4 +20,6 @@
 
     <string name="action_settings">Settings</string>
     <string name="x">X</string>
+    <string name="enterloopname">enter loop name</string>
+    <string name="loopname">Loop name</string>
 </resources>

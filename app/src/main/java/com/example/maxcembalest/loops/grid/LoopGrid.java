@@ -13,6 +13,7 @@ public class LoopGrid {
     private static final String KEY_DEFAULT = "KEY_DEFAULT";
     private static LoopGrid instance = null;
     private Frequencies f = new Frequencies();
+    private String name = "";
 
     private LoopGrid(){
         populateGrid();
@@ -27,7 +28,7 @@ public class LoopGrid {
 
 
     //private LoopGridSquare[][] model = new LoopGridSquare[LoopGridView.dimBeats][LoopGridView.dimNotes];
-    private ToneMatrix model = new ToneMatrix(null,null,null,null,null,null,null,null);
+    private ToneMatrix model = new ToneMatrix("",null,null,null,null,null,null,null,null);
 
     public void populateGrid(){
         for (int i = 0; i < 8; i++){
@@ -61,7 +62,15 @@ public class LoopGrid {
         return model.getRowI(x);
     }
 
-   // public void setField
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    // public void setField
 
 
 

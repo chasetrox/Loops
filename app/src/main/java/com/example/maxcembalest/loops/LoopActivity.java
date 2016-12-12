@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.maxcembalest.loops.fragments.MessageFragment;
+import com.example.maxcembalest.loops.grid.LoopGrid;
 import com.example.maxcembalest.loops.grid.LoopGridView;
 
 import butterknife.ButterKnife;
@@ -32,6 +34,8 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
     private UpdateBeat beatThread;
 
     private ImageView playIcon;
+    private String name;
+    private boolean hasName = false;
 
     private IntroThread introThread = new IntroThread();
 
@@ -39,6 +43,7 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        name = "";
 
         Bundle b = getIntent().getExtras();
         if (b != null) {
@@ -51,6 +56,12 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
         ButterKnife.bind(this);
         setupThreads();
         introThread.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        loopGridView.clearGrid();
     }
 
     private void setupViews() {
@@ -116,12 +127,11 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
 
     @OnClick(R.id.btnSave)
     void onClickSave() {
-        if (editMode) {
-            MatrixDataManager.getInstance().edit(key);
-        } else {
-            MatrixDataManager.getInstance().save();
-        }
-        Toast.makeText(this, "Saved :)", Toast.LENGTH_SHORT).show();
+        MessageFragment setName = new MessageFragment();
+        setName.show(getSupportFragmentManager(), "LOOP_CREATOR");
+
+        // Moved final save call (ie to MatrixDataManager) into OnCallback from Naming method
+        // so that it waits for Loop name.
     }
 
     private void startFragDim(String type) {
@@ -265,6 +275,17 @@ public class LoopActivity extends BaseActivity implements FragmentChangeDim.Opti
     }
     private void playTone1(){
         AudioGenerator.getInstance().playSingle(f.getFreqHighG());
+    }
+
+    public void onUserSelectValue(String val) {
+        LoopGrid.getInstance().setName(val);
+
+        if (editMode) {
+            MatrixDataManager.getInstance().edit(key);
+        } else {
+            MatrixDataManager.getInstance().save();
+        }
+        Toast.makeText(this, "Saved :)", Toast.LENGTH_SHORT).show();
     }
 
 }
